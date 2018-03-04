@@ -4,6 +4,8 @@
  */
 package com.lbc;
 
+import java.util.Collection;
+
 /**
  * Description:  
  * Date: 2018年3月2日 下午2:38:28
@@ -11,9 +13,9 @@ package com.lbc;
  */
 public interface Cache<K,V> {
 
-    V get(K k,CacheLoader<K, V> loader);
+	Wrapper<V> get(K k,CacheLoader<K, V> loader);
     
-    void put(K k,V value);
+    void put(K k,Collection<V> value);
     
     void refresh(K k);
 }

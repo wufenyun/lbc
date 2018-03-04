@@ -4,6 +4,8 @@
  */
 package com.lbc;
 
+import java.util.Collection;
+
 /**
  * Description:  
  * Date: 2018年3月2日 下午4:06:17
@@ -11,5 +13,5 @@ package com.lbc;
  */
 public interface CacheLoader<K,V> extends Status {
     
-    V load(K key);
+    Collection<V> load(K key);
 }

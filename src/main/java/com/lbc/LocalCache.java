@@ -10,5 +10,10 @@ package com.lbc;
  * @author wufenyun 
  */
 public class LocalCache<K, V extends BV> extends AbstractCache<K, BV>{
+
+	public LocalCache(K key, CacheLoader<K, BV> loader) {
+		super(key, loader);
+	}
     
+	
 }
