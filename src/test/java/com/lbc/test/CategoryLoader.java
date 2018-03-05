@@ -24,7 +24,7 @@ public class CategoryLoader implements CacheLoader<String, Category> {
     }
 
     @Override
-    public Collection<Category> initialize(String key) throws Exception {
+    public Collection<Category> initialize() throws Exception {
         List<Category> list = new ArrayList<>();
         Category c1 = new Category();
         c1.setCategoryId(111);
@@ -41,5 +41,11 @@ public class CategoryLoader implements CacheLoader<String, Category> {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public String initializeKey() {
+		// TODO Auto-generated method stub
+		return "category";
+	}
 
 }

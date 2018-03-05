@@ -15,7 +15,9 @@ import com.lbc.schedule.Status;
  */
 public interface CacheLoader<K,V> extends Status {
     
-    Collection<V> initialize(K key) throws Exception;
+	K initializeKey();
+	
+    Collection<V> initialize() throws Exception;
     
     Collection<V> load(K key) throws Exception;
 }
