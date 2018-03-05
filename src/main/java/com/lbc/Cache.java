@@ -6,6 +6,9 @@ package com.lbc;
 
 import java.util.Collection;
 
+import com.lbc.cacheloader.CacheLoader;
+import com.lbc.wrap.Wrapper;
+
 /**
  * Description:  
  * Date: 2018年3月2日 下午2:38:28

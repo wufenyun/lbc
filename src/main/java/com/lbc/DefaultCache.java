@@ -4,32 +4,33 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lbc.cacheloader.CacheLoader;
+import com.lbc.wrap.SimpleWrapper;
+import com.lbc.wrap.Wrapper;
 
-public class AbstractCache<K, V> implements Cache<K, V> {
+
+public class DefaultCache<K, V> implements Cache<K, V> {
 
     private Map<K, Wrapper<V>> cache = new ConcurrentHashMap<>();
     private Map<K, CacheLoader<K, V>> loaderCache = new ConcurrentHashMap<>();
-    
-    public AbstractCache(K key,CacheLoader<K, V> loader) {
-    	loaderCache.put(key, loader);
-    }
     
     @Override
     public Wrapper<V> get(K key, CacheLoader<K, V> loader) {
     	Wrapper<V> value = cache.get(key);
         synchronized (key) {
             if(null == value) {
-            	Collection<V> data = loader.load(key);
-            	this.put(key, data);
+            	Collection<V> data;
+                try {
+                    data = loader.load(key);
+                    this.put(key, data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return cache.get(key);
     }
     
-    private CacheLoader<K, V> getLoader(K key) {
-    	return loaderCache.get(key);
-    }
-
     @Override
     public void refresh(K k) {
         

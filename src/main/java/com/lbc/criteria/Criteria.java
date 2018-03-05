@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lbc;
+package com.lbc.criteria;
 
 /**
  * @Description: 

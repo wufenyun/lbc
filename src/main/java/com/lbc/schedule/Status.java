@@ -2,7 +2,7 @@
  * Package: com.lbc
  * Description: 
  */
-package com.lbc;
+package com.lbc.schedule;
 
 /**
  * Description:  

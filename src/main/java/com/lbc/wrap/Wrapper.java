@@ -1,6 +1,8 @@
-package com.lbc;
+package com.lbc.wrap;
 
 import java.util.Collection;
+
+import com.lbc.criteria.Criteria;
 
 public interface Wrapper<V> extends BV<V>,Criteria {
 	

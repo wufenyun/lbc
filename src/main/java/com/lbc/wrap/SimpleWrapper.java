@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lbc;
+package com.lbc.wrap;
 
 import java.util.Collection;
 import java.util.List;

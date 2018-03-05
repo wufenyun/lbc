@@ -2,9 +2,11 @@
  * Package: com.lbc
  * Description: 
  */
-package com.lbc;
+package com.lbc.cacheloader;
 
 import java.util.Collection;
+
+import com.lbc.schedule.Status;
 
 /**
  * Description:  
@@ -13,5 +15,7 @@ import java.util.Collection;
  */
 public interface CacheLoader<K,V> extends Status {
     
-    Collection<V> load(K key);
+    Collection<V> initialize(K key) throws Exception;
+    
+    Collection<V> load(K key) throws Exception;
 }

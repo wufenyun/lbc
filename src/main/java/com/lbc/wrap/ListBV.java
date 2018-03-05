@@ -2,7 +2,7 @@
  * Package: com.lbc
  * Description: 
  */
-package com.lbc;
+package com.lbc.wrap;
 
 import java.util.List;
 
