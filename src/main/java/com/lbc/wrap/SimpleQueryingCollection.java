@@ -5,6 +5,10 @@ package com.lbc.wrap;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.lbc.criteria.Criteria;
 
 /**
  * @Description: 
@@ -13,7 +17,7 @@ import java.util.List;
  * @date 2018年3月3日 上午10:53:32
  */
 
-public class SimpleWrapper<V> implements Wrapper<V> {
+public class SimpleQueryingCollection<V> implements QueryingCollection<V> {
 
 	private Collection<V> data;
 	
@@ -46,5 +50,11 @@ public class SimpleWrapper<V> implements Wrapper<V> {
 	public void setData(Collection<V> data) {
 		this.data = data;
 	}
+
+    @Override
+    public List<V> query(Criteria<V> criteria) {
+        
+        return data.stream().filter((v)->v.equals("a")).collect(Collectors.toList());
+    }
 
 }

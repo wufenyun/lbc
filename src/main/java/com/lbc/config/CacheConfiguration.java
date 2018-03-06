@@ -18,7 +18,7 @@ public class CacheConfiguration {
     
     private Map<Object,CacheLoader<Object,Object>> registedMap = new ConcurrentHashMap<>();
     
-    public void regist(Object key,CacheLoader loader) {
+    public void regist(Object key,CacheLoader<Object,Object> loader) {
         registedMap.put(key, loader);
     }
     

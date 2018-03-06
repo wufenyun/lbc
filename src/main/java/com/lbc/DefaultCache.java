@@ -5,18 +5,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.lbc.cacheloader.CacheLoader;
-import com.lbc.wrap.SimpleWrapper;
-import com.lbc.wrap.Wrapper;
+import com.lbc.wrap.QueryingCollection;
+import com.lbc.wrap.SimpleQueryingCollection;
 
 
 public class DefaultCache<K, V> implements Cache<K, V> {
 
-    private Map<K, Wrapper<V>> cache = new ConcurrentHashMap<>();
+    private Map<K, QueryingCollection<V>> cache = new ConcurrentHashMap<>();
     private Map<K, CacheLoader<K, V>> loaderCache = new ConcurrentHashMap<>();
     
     @Override
-    public Wrapper<V> get(K key, CacheLoader<K, V> loader) {
-    	Wrapper<V> value = cache.get(key);
+    public QueryingCollection<V> get(K key, CacheLoader<K, V> loader) {
+        QueryingCollection<V> value = cache.get(key);
         synchronized (key) {
             if(null == value) {
             	Collection<V> data;
@@ -38,7 +38,7 @@ public class DefaultCache<K, V> implements Cache<K, V> {
 
 	@Override
 	public void put(K k, Collection<V> value) {
-		SimpleWrapper<V> wrapper = new SimpleWrapper<>();
+		SimpleQueryingCollection<V> wrapper = new SimpleQueryingCollection<>();
     	wrapper.wrap(value);
     	cache.put(k, wrapper);
 	}

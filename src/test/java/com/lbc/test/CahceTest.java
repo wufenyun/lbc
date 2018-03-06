@@ -32,13 +32,13 @@ public class CahceTest {
     
     @Test
     public void sss() {
-        List<String> l = new ArrayList<>();
-        l.addAll(isNullListReturnEmpty(null));
+        Category cate = new Category();
+        cate.setCategoryId(111);
+        cate.setLevel(1);
+        
+        
     }
     
-    public <V>  Collection<V> isNullListReturnEmpty(Collection<V> collection) {
-        return (collection == null)?new ArrayList<>():collection;
-    }
     
     public static class Mapper {
 

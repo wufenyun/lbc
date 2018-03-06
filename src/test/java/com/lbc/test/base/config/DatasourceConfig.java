@@ -27,9 +27,9 @@ public class DatasourceConfig {
     @Bean(name = "dataSource",destroyMethod = "close")
     public DruidDataSource construction() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://localhost:3306/boss?useUnicode=true&characterEncoding=utf-8");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/zhubajie-rms?useUnicode=true&characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("root");
+        dataSource.setPassword("sonar");
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         //配置最大连接
         dataSource.setMaxActive(50);

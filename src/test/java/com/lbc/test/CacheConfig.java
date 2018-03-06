@@ -4,14 +4,11 @@
  */
 package com.lbc.test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.lbc.config.CacheConfiguration;
-import com.lbc.config.CacheFactory;
-import com.lbc.config.CacheFactoryBean;
-import com.lbc.test.module.user.dao.UserMapper;
+import com.lbc.config.DefaultCacheFactory;
 
 /**
  * Description:  
@@ -21,16 +18,12 @@ import com.lbc.test.module.user.dao.UserMapper;
 @Configuration
 public class CacheConfig {
 	
-	@Autowired
-	private UserLoader userLoader;
-	
     @Bean
-    public CacheFactory config() throws Exception {
-        CacheFactoryBean bean = new CacheFactoryBean();
+    public DefaultCacheFactory config() throws Exception {
+        DefaultCacheFactory bean = new DefaultCacheFactory();
         CacheConfiguration configuration = new CacheConfiguration();
-        configuration.regist("category", new CategoryLoader());
-        configuration.regist("user", userLoader);
         bean.setConfiguration(configuration);
-        return bean.getObject();
+        return bean;
     }
+    
 }
