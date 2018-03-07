@@ -2,25 +2,35 @@
  * Package: com.lbc.test
  * Description: 
  */
-package com.lbc.test;
+package com.lbc.test.module.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.lbc.cacheloader.CacheLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lbc.Cache;
+import com.lbc.LocalCache;
+import com.lbc.exchanger.CacheExchanger;
+import com.lbc.test.module.user.entity.Category;
 
 /**
  * Description:  
  * Date: 2018年3月5日 下午2:14:12
  * @author wufenyun 
  */
-public class CategoryLoader implements CacheLoader<String, Category> {
+@Service
+public class CategoryLoader implements CacheExchanger<String, Category> {
 
+    @Autowired
+    private LocalCache localCache;
+    
     @Override
-    public boolean isNeedRefresh() {
+    public boolean needRefresh(String key) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -47,5 +57,13 @@ public class CategoryLoader implements CacheLoader<String, Category> {
 		// TODO Auto-generated method stub
 		return "category";
 	}
+
+    public LocalCache getLocalCache() {
+        return localCache;
+    }
+
+    public void setLocalCache(LocalCache localCache) {
+        this.localCache = localCache;
+    }
 
 }

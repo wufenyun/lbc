@@ -2,22 +2,21 @@
  * Package: com.lbc
  * Description: 
  */
-package com.lbc.cacheloader;
+package com.lbc.exchanger;
 
 import java.util.Collection;
-
-import com.lbc.schedule.Status;
 
 /**
  * Description:  
  * Date: 2018年3月2日 下午4:06:17
  * @author wufenyun 
  */
-public interface CacheLoader<K,V> extends Status {
+public interface CacheExchanger<K,V> extends CacheLoader<K,V>,Status<K> {
     
-	K initializeKey();
-	
+    K initializeKey();
+    
     Collection<V> initialize() throws Exception;
+
+    boolean needRefresh(K key);
     
-    Collection<V> load(K key) throws Exception;
 }

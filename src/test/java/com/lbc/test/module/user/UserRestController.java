@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lbc.LocalCache;
 import com.lbc.test.module.user.dao.UserMapper;
 import com.lbc.test.module.user.entity.UserEntity;
 
@@ -23,6 +24,10 @@ public class UserRestController {
 
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+    private LocalCache localCache;
+    @Autowired
+    private UserLoader userLoader;
 	
 	@RequestMapping("user/query100")
 	public List<UserEntity> query100() {

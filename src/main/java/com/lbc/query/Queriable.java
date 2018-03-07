@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lbc.criteria;
+package com.lbc.query;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ import java.util.List;
 
 public interface Queriable<V> {
 	
-	List<V> query(Criteria<V> criteria);
+	List<V> query(Query query);
 }

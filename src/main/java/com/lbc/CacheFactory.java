@@ -2,9 +2,9 @@
  * Package: com.lbc.config
  * Description: 
  */
-package com.lbc.config;
+package com.lbc;
 
-import com.lbc.Cache;
+import com.lbc.config.CacheConfiguration;
 
 /**
  * Description:  

@@ -1,4 +1,4 @@
-package com.lbc.criteria;
+package com.lbc.query;
 
 
 public interface CriteriaDefinition {
