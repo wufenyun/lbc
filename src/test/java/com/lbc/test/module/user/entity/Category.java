@@ -1,4 +1,4 @@
-package com.lbc.test;
+package com.lbc.test.module.user.entity;
 
 import java.util.List;
 import java.util.Map;

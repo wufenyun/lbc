@@ -5,9 +5,10 @@
 package com.lbc;
 
 import java.util.Collection;
+import java.util.Map;
 
-import com.lbc.cacheloader.CacheLoader;
-import com.lbc.wrap.Wrapper;
+import com.lbc.exchanger.CacheExchanger;
+import com.lbc.wrap.QueryingCollection;
 
 /**
  * Description:  
@@ -16,9 +17,11 @@ import com.lbc.wrap.Wrapper;
  */
 public interface Cache<K,V> {
 
-	Wrapper<V> get(K k,CacheLoader<K, V> loader);
+    QueryingCollection<K, V> get(K k,CacheExchanger<K, V> loader);
     
     void put(K k,Collection<V> value);
     
     void refresh(K k);
+    
+    Map<K, CacheExchanger<K, V>> getInitialedCache();
 }

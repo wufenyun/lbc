@@ -1,7 +1,9 @@
 /**
  * 
  */
-package com.lbc.criteria;
+package com.lbc.query;
+
+import java.util.List;
 
 /**
  * @Description: 
@@ -9,7 +11,7 @@ package com.lbc.criteria;
  * @date 2018年3月3日 上午10:33:32
  */
 
-public interface Criteria<V> {
+public interface Queriable<V> {
 	
-	
+	List<V> query(Query query);
 }
