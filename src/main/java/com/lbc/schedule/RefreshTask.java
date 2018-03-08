@@ -18,20 +18,25 @@ import com.lbc.exchanger.CacheExchanger;
  * Date: 2018年3月7日 下午2:24:50
  * @author wufenyun 
  */
-public class RefreshTask implements Runnable {
+public class RefreshTask implements Runnable,TimingRefresh {
     
     private static final Logger logger = LoggerFactory.getLogger(RefreshTask.class);
     
-    private Cache<Object, Object> cache;
+    private Cache cache;
     
-    public RefreshTask(Cache<Object, Object> cache) {
+    public RefreshTask(Cache cache) {
         this.cache = cache;
     }
 
     @Override
     public void run() {
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
         logger.info("start to reload data ");
-        Map<Object,CacheExchanger<Object, Object>> map = cache.getInitialedCache();
+        Map<Object, CacheExchanger<Object, Object>> map = cache.getInitialedCache();
         map.forEach((key,loader)->{
             try {
                 if(loader.needRefresh(key)) {
@@ -43,5 +48,4 @@ public class RefreshTask implements Runnable {
             }
         });
     }
-
 }

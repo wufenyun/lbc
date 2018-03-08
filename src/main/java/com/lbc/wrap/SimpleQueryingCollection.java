@@ -16,13 +16,12 @@ import com.lbc.query.Query;
  * @param <V>
  * @date 2018年3月3日 上午10:53:32
  */
-
 public class SimpleQueryingCollection<K, V> implements QueryingCollection<K, V> {
 
 	private Collection<V> data;
 	
 	public long size() {
-		return 0;
+		return data.size();
 	}
 
 	public Collection<V> all() {
@@ -35,26 +34,25 @@ public class SimpleQueryingCollection<K, V> implements QueryingCollection<K, V> 
 
 	@Override
 	public void wrap(Collection<V> v) {
-		setData(v);
-	}
-
-	public Collection<V> getData() {
-		return data;
-	}
-
-	public void setData(Collection<V> data) {
-		this.data = data;
+		this.data = v;
 	}
 
     @Override
     public List<V> query(Query query) {
+        if(null == query) {
+            return data.stream().collect(Collectors.toList());
+        }
         return data.stream().filter((v)->query.predict(v)).collect(Collectors.toList());
     }
 
     @Override
     public ConcurrentMap<K, V> asMap() {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public Collection<V> data() {
+        return data;
     }
 
 }

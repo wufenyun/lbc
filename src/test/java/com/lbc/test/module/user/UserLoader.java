@@ -15,7 +15,8 @@ public class UserLoader implements CacheExchanger<String, UserEntity> {
 
 	@Autowired
 	private UserMapper userMapper;
-	
+	@Autowired
+	private UserService userService;
 	
 
 	@Override

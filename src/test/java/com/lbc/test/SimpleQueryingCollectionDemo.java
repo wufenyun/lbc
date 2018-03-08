@@ -25,7 +25,7 @@ public class SimpleQueryingCollectionDemo {
     @Test
     public void demo() {
         SimpleQueryingCollection<String,Category> co = new SimpleQueryingCollection<String,Category>();
-        co.setData(getList());
+        co.wrap(getList());
         Query query = Query.query(Criteria.where("categoryId").is(1)
                 .and("level").is(1)
                 .and("status").in(Arrays.asList(0,1)));

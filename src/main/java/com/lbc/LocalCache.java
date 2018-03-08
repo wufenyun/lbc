@@ -9,47 +9,59 @@ import com.lbc.wrap.QueryingCollection;
 import com.lbc.wrap.SimpleQueryingCollection;
 
 
-public class LocalCache<K, V> implements Cache<K, V> {
+public class LocalCache implements Cache {
 
-    private Map<K, QueryingCollection<K, V>> cache = new ConcurrentHashMap<>();
-    private Map<K, CacheExchanger<K, V>> initialedCache = new ConcurrentHashMap<>();
+    private Map<Object, QueryingCollection<?, ?>> storage = new ConcurrentHashMap<>();
+    private Map<Object, CacheExchanger<?,?>> initialedCache = new ConcurrentHashMap<>();
+    private Map<Class<? extends CacheExchanger<?, ?>>, CacheExchanger> exchangerMapping = new ConcurrentHashMap<>();
+    
+    public void regist(Object key, CacheExchanger<?,?> exchanger) {
+        initialedCache.put(key, exchanger);
+    }
     
     @Override
-    public QueryingCollection<K, V> get(K key, CacheExchanger<K, V> loader) {
-        QueryingCollection<K, V> value = cache.get(key);
+    public <K, V> QueryingCollection<K, V> get(K key) {
+        return (QueryingCollection<K, V>) storage.get(key);
+    }
+    
+    @Override
+    public <K, V> QueryingCollection<K, V> get(K key,Class<? extends CacheExchanger> clazz) {
+        QueryingCollection<?, ?> value = storage.get(key);
         synchronized (key) {
             if(null == value) {
-            	Collection<V> data;
+            	Collection<?> data;
                 try {
-                    data = loader.load(key);
-                    this.put(key, data);
+                    data = exchangerMapping.get(clazz).load(key);
+                    this.put(key,data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        return cache.get(key);
+        return (QueryingCollection<K, V>) storage.get(key);
     }
     
     @Override
-    public void refresh(K k) {
+    public <K> void refresh(K k) {
         
     }
 
-	@Override
-	public void put(K k, Collection<V> value) {
-		SimpleQueryingCollection<K, V> wrapper = new SimpleQueryingCollection<>();
-    	wrapper.wrap(value);
-    	cache.put(k, wrapper);
-	}
-
+    @SuppressWarnings("unchecked")
     @Override
-    public Map<K, CacheExchanger<K, V>> getInitialedCache() {
-        // TODO Auto-generated method stub
-        return null;
+    public Map<Object, CacheExchanger<?,?>> getInitialedCache() {
+        return initialedCache;
     }
 
-   
+    public void setInitialedCache(Map<Object, CacheExchanger<?,?>> initialedCache) {
+        this.initialedCache = initialedCache;
+    }
+
+    @Override
+    public <K,V> void put(K key, Collection<V> value) {
+        QueryingCollection<K,V> wrapper = new SimpleQueryingCollection<>();
+        wrapper.wrap(value);
+        storage.put(key, wrapper);
+    }
 
 
 }

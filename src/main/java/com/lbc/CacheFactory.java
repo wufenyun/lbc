@@ -13,7 +13,7 @@ import com.lbc.config.CacheConfiguration;
  */
 public interface CacheFactory {
     
-    <K,V> Cache<K,V> openSingletonCache();
+    Cache openSingletonCache();
     
     CacheConfiguration getConfiguration();
 }

@@ -15,13 +15,15 @@ import com.lbc.wrap.QueryingCollection;
  * Date: 2018年3月2日 下午2:38:28
  * @author wufenyun 
  */
-public interface Cache<K,V> {
+public interface Cache {
 
-    QueryingCollection<K, V> get(K k,CacheExchanger<K, V> loader);
+    <K, V> QueryingCollection<K, V> get(K key,Class<? extends CacheExchanger> clazz);
+
+    <K, V> QueryingCollection<K, V> get(K key);
     
-    void put(K k,Collection<V> value);
+    <K, V> void put(K key,Collection<V> value);
     
-    void refresh(K k);
+    <K> void refresh(K key);
     
-    Map<K, CacheExchanger<K, V>> getInitialedCache();
+    <K, V> Map<K, CacheExchanger<K, V>> getInitialedCache();
 }

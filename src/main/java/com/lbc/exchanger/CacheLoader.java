@@ -14,4 +14,5 @@ import java.util.Collection;
 public interface CacheLoader<K,V> {
     
     Collection<V> load(K key) throws Exception;
+    
 }

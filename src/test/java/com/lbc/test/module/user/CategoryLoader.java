@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.lbc.Cache;
 import com.lbc.LocalCache;
 import com.lbc.exchanger.CacheExchanger;
+import com.lbc.test.module.user.dao.UserMapper;
 import com.lbc.test.module.user.entity.Category;
 
 /**
@@ -26,6 +27,8 @@ public class CategoryLoader implements CacheExchanger<String, Category> {
 
     @Autowired
     private LocalCache localCache;
+    @Autowired
+    private UserMapper userMapper;
     
     @Override
     public boolean needRefresh(String key) {

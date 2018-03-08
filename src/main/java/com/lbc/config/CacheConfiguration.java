@@ -29,7 +29,7 @@ public class CacheConfiguration {
      */
     private int refreshThreads = 1;
     
-    private Map<Object,CacheExchanger<Object,Object>> registedMap = new ConcurrentHashMap<>();
+   /* private Map<Object,CacheExchanger<Object,Object>> registedMap = new ConcurrentHashMap<>();
     
     public void regist(Object key,CacheExchanger<Object,Object> loader) {
         registedMap.put(key, loader);
@@ -37,7 +37,7 @@ public class CacheConfiguration {
     
     public Map<Object,CacheExchanger<Object,Object>> getRegistedMap() {
         return registedMap;
-    }
+    }*/
 
     public long getIntervalMills() {
         return intervalMills;

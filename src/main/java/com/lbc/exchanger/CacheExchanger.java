@@ -16,7 +16,5 @@ public interface CacheExchanger<K,V> extends CacheLoader<K,V>,Status<K> {
     K initializeKey();
     
     Collection<V> initialize() throws Exception;
-
-    boolean needRefresh(K key);
     
 }
