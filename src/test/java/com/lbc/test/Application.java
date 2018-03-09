@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import com.lbc.Cache;
-import com.lbc.CacheFactory;
+import com.lbc.CacheContext;
 import com.lbc.LocalCache;
 import com.lbc.test.module.user.entity.UserEntity;
 import com.lbc.wrap.QueryingCollection;
@@ -25,7 +25,7 @@ public class Application {
     
     public static void main(String[] args) throws InterruptedException {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
-        CacheFactory cacheFactory = context.getBean(CacheFactory.class);
+        CacheContext cacheFactory = context.getBean(CacheContext.class);
         Cache cache1 = cacheFactory.openSingletonCache();
         //QueryingCollection<String,UserEntity> userWrapper = userCache.get("user", null);
         Cache cache2 = context.getBean(LocalCache.class);

@@ -63,5 +63,12 @@ public class LocalCache implements Cache {
         storage.put(key, wrapper);
     }
 
+    @Override
+    public <K, V> void replace(K key, Collection<V> value) {
+        QueryingCollection<K,V> wrapper = new SimpleQueryingCollection<>();
+        wrapper.wrap(value);
+        storage.replace(key, wrapper);
+    }
+
 
 }

@@ -31,12 +31,6 @@ public class CategoryLoader implements CacheExchanger<String, Category> {
     private UserMapper userMapper;
     
     @Override
-    public boolean needRefresh(String key) {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
     public Collection<Category> initialize() throws Exception {
         List<Category> list = new ArrayList<>();
         Category c1 = new Category();

@@ -11,7 +11,7 @@ import java.util.Collection;
  * Date: 2018年3月2日 下午4:06:17
  * @author wufenyun 
  */
-public interface CacheExchanger<K,V> extends CacheLoader<K,V>,Status<K> {
+public interface CacheExchanger<K,V> extends CacheLoader<K,V> {
     
     K initializeKey();
     

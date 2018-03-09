@@ -7,8 +7,9 @@ package com.lbc.test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.lbc.DefaultCacheFactory;
+import com.lbc.DefaultCacheContext;
 import com.lbc.config.CacheConfiguration;
+import com.lbc.config.CacheConfiguration.MonitorModel;
 
 /**
  * Description:  
@@ -19,11 +20,12 @@ import com.lbc.config.CacheConfiguration;
 public class CacheConfig {
 	
     @Bean
-    public DefaultCacheFactory config() throws Exception {
-        DefaultCacheFactory bean = new DefaultCacheFactory();
+    public DefaultCacheContext config() throws Exception {
+        DefaultCacheContext bean = new DefaultCacheContext();
         CacheConfiguration configuration = new CacheConfiguration();
         configuration.setIntervalMills(4000);
         configuration.setInitialDelay(4000);
+        configuration.setMonitorModel(MonitorModel.POLLING);
         bean.setConfiguration(configuration);
         return bean;
     }

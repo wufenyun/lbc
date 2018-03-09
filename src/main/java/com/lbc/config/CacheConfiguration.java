@@ -4,11 +4,6 @@
  */
 package com.lbc.config;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.lbc.exchanger.CacheExchanger;
-
 /**
  * Description:  
  * Date: 2018年3月5日 上午10:49:13
@@ -28,6 +23,13 @@ public class CacheConfiguration {
      * 定时刷新缓存任务线程数，默认单线程
      */
     private int refreshThreads = 1;
+    
+    private MonitorModel monitorModel = MonitorModel.POLLING;
+    
+    public static enum MonitorModel {
+        POLLING,
+        EVNET_ZK;
+    }
     
    /* private Map<Object,CacheExchanger<Object,Object>> registedMap = new ConcurrentHashMap<>();
     
@@ -61,5 +63,13 @@ public class CacheConfiguration {
 
     public void setInitialDelay(long initialDelay) {
         this.initialDelay = initialDelay;
+    }
+
+    public MonitorModel getMonitorModel() {
+        return monitorModel;
+    }
+
+    public void setMonitorModel(MonitorModel monitorModel) {
+        this.monitorModel = monitorModel;
     }
 }

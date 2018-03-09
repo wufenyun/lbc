@@ -17,13 +17,6 @@ public class UserLoader implements CacheExchanger<String, UserEntity> {
 	private UserMapper userMapper;
 	@Autowired
 	private UserService userService;
-	
-
-	@Override
-	public boolean needRefresh(String key) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public Collection<UserEntity> initialize() throws Exception {

@@ -5,15 +5,14 @@
 package com.lbc;
 
 import java.util.Collection;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -26,7 +25,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import com.lbc.config.CacheConfiguration;
 import com.lbc.exchanger.CacheExchanger;
-import com.lbc.schedule.RefreshTask;
+import com.lbc.refresh.StatusAcquirer;
+import com.lbc.refresh.StatusMonitor;
+import com.lbc.refresh.event.ZkCacheMonitor;
+import com.lbc.refresh.polling.PollingMonitor;
+import com.lbc.refresh.polling.PolllingRefreshMonitor;
 
 /**
  * Description: 
@@ -34,27 +37,26 @@ import com.lbc.schedule.RefreshTask;
  * 
  * @author wufenyun
  */
-public class DefaultCacheFactory implements CacheFactory, BeanPostProcessor, BeanDefinitionRegistryPostProcessor,
+public class DefaultCacheContext implements CacheContext, BeanPostProcessor, BeanDefinitionRegistryPostProcessor,
         ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultCacheFactory.class);
-
-    private LocalCache cache;
-    private CacheConfiguration configuration = new CacheConfiguration();
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
     private ApplicationContext applicationContext;
     
-    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(configuration.getRefreshThreads(),
-            new ThreadFactory() {
-
-                @Override
-                public Thread newThread(Runnable r) {
-                    return new Thread(r, "localcache_refresher");
-                }
-            });
+    private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
+    private Map<Class<? extends CacheExchanger<?, ?>>, CacheExchanger> allKeyMap = new ConcurrentHashMap<>();
+    
+    private CacheConfiguration configuration;
+    private LocalCache cache;
+    private StatusMonitor monitor;
 
     @Override
     public Cache openSingletonCache() {
         return cache;
+    }
+    
+    public void regist(Object key, CacheExchanger<?,?> exchanger) {
+        initialedKeyMap.put(key, exchanger);
     }
 
     @Override
@@ -63,16 +65,40 @@ public class DefaultCacheFactory implements CacheFactory, BeanPostProcessor, Bea
     }
 
     /**
-     * spring容器启动完成后开始任务
+     * spring容器启动完成后开始缓存监控任务
      * 
      * @param event
      */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        // 容器启动完成之后开始执行定时任务
-        logger.info("spring容器启动完毕，开始启动定时任务");
-        executor.scheduleWithFixedDelay(new RefreshTask(cache), configuration.getInitialDelay(),
-                configuration.getIntervalMills(), TimeUnit.MILLISECONDS);
+        logger.info("spring容器启动完毕，开始缓存监控任务");
+        switch(configuration.getMonitorModel()) {
+        case EVNET_ZK:
+            initZKMonitor();break;
+        case POLLING:
+            initPollMonitor();break;
+        default:
+            break;
+        }
+    }
+    
+    private void initPollMonitor() {
+        this.monitor = new PolllingRefreshMonitor(cache, configuration);
+        StatusAcquirer sAcquirer = null;
+        try {
+            sAcquirer = applicationContext.getBean(StatusAcquirer.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            logger.warn("用户未创建缓存状态获取器(StatusAcquirer)，缓存将不会刷新，请注意！！！！！！！！！");
+            return;
+        }
+        PollingMonitor pmonitor = (PollingMonitor)monitor;
+        pmonitor.setStatusAcquirer(sAcquirer);
+        monitor.startMonitoring();
+    }
+    
+    private void initZKMonitor() {
+        this.monitor = new ZkCacheMonitor();
+        monitor.startMonitoring();
     }
 
     @Override
@@ -131,6 +157,18 @@ public class DefaultCacheFactory implements CacheFactory, BeanPostProcessor, Bea
     @Override
     public void destroy() throws Exception {
         cache = null;
+    }
+
+    @Override
+    public Map getKeyLoaders() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map getInitianizedKeys() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

@@ -2,7 +2,7 @@
  * Package: com.qingwei.commonl.bean.uti
  * Description: 
  */
-package com.lbc.util;
+package com.lbc.surport;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;

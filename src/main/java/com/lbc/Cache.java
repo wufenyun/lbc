@@ -26,4 +26,6 @@ public interface Cache {
     <K> void refresh(K key);
     
     <K, V> Map<K, CacheExchanger<K, V>> getInitialedCache();
+
+    <K,V> void replace(K key, Collection<V> data);
 }

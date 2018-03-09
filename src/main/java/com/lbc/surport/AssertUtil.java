@@ -2,7 +2,7 @@
  * Package: com.qingwei.common.util.support
  * Description: 
  */
-package com.lbc.util;
+package com.lbc.surport;
 
 import java.util.Collection;
 import java.util.Map;
