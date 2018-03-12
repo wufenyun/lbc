@@ -25,7 +25,7 @@ public class LocalCache implements Cache {
     private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheExchanger<?, ?>> exchangerMapping = new ConcurrentHashMap<>();
-    
+    private CacheContext context;
 
     public void regist(Object key, CacheExchanger<?,?> exchanger) {
         initialedKeyMap.put(key, exchanger);
@@ -73,6 +73,7 @@ public class LocalCache implements Cache {
         wrapper.wrap(data);
         storage.put(key, wrapper);
         allKeyMap.put(key, exchanger);
+        //context.
     }
 
     @Override
@@ -95,6 +96,14 @@ public class LocalCache implements Cache {
     @Override
     public Map<Object, CacheExchanger<?,?>> getAllKeyMap() {
         return allKeyMap;
+    }
+
+    public CacheContext getContext() {
+        return context;
+    }
+
+    public void setContext(CacheContext context) {
+        this.context = context;
     }
 
 }

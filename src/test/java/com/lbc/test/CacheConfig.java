@@ -25,7 +25,8 @@ public class CacheConfig {
         CacheConfiguration configuration = new CacheConfiguration();
         configuration.setIntervalMills(4000);
         configuration.setInitialDelay(4000);
-        configuration.setMonitorModel(MonitorModel.POLLING);
+        configuration.setMonitorModel(MonitorModel.EVNET_ZK);
+        configuration.setZkConnection("127.0.0.1:2181");
         bean.setConfiguration(configuration);
         return bean;
     }

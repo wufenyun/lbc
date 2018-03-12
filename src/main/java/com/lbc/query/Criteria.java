@@ -13,7 +13,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbc.surport.PropertyUtil;
+import com.lbc.support.PropertyUtil;
 
 /**
  * Description:  

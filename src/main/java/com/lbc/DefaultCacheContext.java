@@ -63,6 +63,8 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         logger.info("spring容器启动完毕，开始缓存监控任务");
+        cache.setContext(this);
+        
         switch(configuration.getMonitorModel()) {
         case EVNET_ZK:
             initZKMonitor();break;
@@ -88,7 +90,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     }
     
     private void initZKMonitor() {
-        this.monitor = new ZkCacheMonitor();
+        this.monitor = new ZkCacheMonitor(this);
         monitor.startMonitoring();
     }
 

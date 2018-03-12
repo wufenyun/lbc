@@ -2,7 +2,7 @@
  * Package: com.qingwei.common.exception
  * Description: 
  */
-package com.lbc.surport;
+package com.lbc.support;
 
 /**
  * Description:  

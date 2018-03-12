@@ -26,6 +26,12 @@ public class CacheConfiguration {
     
     private MonitorModel monitorModel = MonitorModel.POLLING;
     
+    /**
+     * zookeeper地址
+     */
+    private String zkConnection;
+    private String rootPath = "/localBatchCache";
+    
     public static enum MonitorModel {
         /**
          * 采用轮询的模式来监控缓存是否需要刷新
@@ -68,4 +74,21 @@ public class CacheConfiguration {
     public void setMonitorModel(MonitorModel monitorModel) {
         this.monitorModel = monitorModel;
     }
+
+    public String getZkConnection() {
+        return zkConnection;
+    }
+
+    public void setZkConnection(String zkConnection) {
+        this.zkConnection = zkConnection;
+    }
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
+
 }
