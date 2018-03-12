@@ -30,6 +30,7 @@ public class BeanException extends RuntimeException {
 		return "BeanException [message=" + message + "]";
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}

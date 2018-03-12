@@ -31,7 +31,7 @@ public class CategoryLoader implements CacheExchanger<String, Category> {
     private UserMapper userMapper;
     
     @Override
-    public Collection<Category> initialize() throws Exception {
+    public Collection<Category> prelaoding() throws Exception {
         List<Category> list = new ArrayList<>();
         Category c1 = new Category();
         c1.setCategoryId(111);
@@ -46,11 +46,11 @@ public class CategoryLoader implements CacheExchanger<String, Category> {
     @Override
     public Collection<Category> load(String key) throws Exception {
         // TODO Auto-generated method stub
-        return null;
+        return prelaoding();
     }
 
 	@Override
-	public String initializeKey() {
+	public String prelaodingKey() {
 		// TODO Auto-generated method stub
 		return "category";
 	}

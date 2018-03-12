@@ -27,20 +27,16 @@ public class CacheConfiguration {
     private MonitorModel monitorModel = MonitorModel.POLLING;
     
     public static enum MonitorModel {
+        /**
+         * 采用轮询的模式来监控缓存是否需要刷新
+         */
         POLLING,
+        /**
+         * 借助zookeeper实现事件驱动模式来监控缓存是否需要刷新
+         */
         EVNET_ZK;
     }
     
-   /* private Map<Object,CacheExchanger<Object,Object>> registedMap = new ConcurrentHashMap<>();
-    
-    public void regist(Object key,CacheExchanger<Object,Object> loader) {
-        registedMap.put(key, loader);
-    }
-    
-    public Map<Object,CacheExchanger<Object,Object>> getRegistedMap() {
-        return registedMap;
-    }*/
-
     public long getIntervalMills() {
         return intervalMills;
     }

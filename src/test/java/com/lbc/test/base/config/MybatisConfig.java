@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Description:  
+ * Date: 2018年3月2日 下午2:38:28
+ * @author wufenyun 
+ */
 @Configuration
 public class MybatisConfig {
 

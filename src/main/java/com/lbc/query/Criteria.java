@@ -111,7 +111,7 @@ public class Criteria implements CriteriaDefinition {
     
     private boolean domatch(Operator operator,Object origin,Object target) {
         switch(operator) {
-        case IS:return origin==target;
+        case IS:return origin.equals(target);
         case NE:return origin!=target;
         //case LT:return origin > target;
         case IN:return ((Collection<?>)target).contains(origin);
@@ -120,10 +120,15 @@ public class Criteria implements CriteriaDefinition {
     }
     
     private static enum Operator {
+        //相等操作符
         IS,
+        //不相等操作符
         NE,
+        //小于
         LT,
+        //小于等于
         TLE,
+        //包含
         IN;
     }
 }

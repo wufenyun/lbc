@@ -2,7 +2,11 @@ package com.lbc.test.module.user.entity;
 
 import java.util.Date;
 
-
+/**
+ * Description:  
+ * Date: 2018年3月2日 下午2:38:28
+ * @author wufenyun 
+ */
 public class UserEntity {
 	
 	private Integer id;

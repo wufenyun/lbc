@@ -20,7 +20,7 @@ import com.lbc.wrap.SimpleQueryingCollection;
  * Date: 2018年3月7日 上午11:10:45
  * @author wufenyun 
  */
-public class SimpleQueryingCollectionDemo {
+public class SimpleQueryingCollectionTest {
 
     @Test
     public void demo() {

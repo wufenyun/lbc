@@ -7,7 +7,6 @@ package com.lbc.test;
 import java.util.Collection;
 
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -26,7 +25,7 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
         CacheContext cacheFactory = context.getBean(CacheContext.class);
-        Cache cache1 = cacheFactory.openSingletonCache();
+        Cache cache1 = cacheFactory.getGloableSingleCache();
         //QueryingCollection<String,UserEntity> userWrapper = userCache.get("user", null);
         Cache cache2 = context.getBean(LocalCache.class);
         QueryingCollection<String,UserEntity> col = cache2.get("user");

@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author xutaoyang
- * @Date 2017/6/13
+ * Description:  
+ * Date: 2018年3月2日 下午2:38:28
+ * @author wufenyun 
  */
 public class Category {
 

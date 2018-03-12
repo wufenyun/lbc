@@ -5,12 +5,17 @@
 package com.lbc.refresh.polling;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.lbc.Cache;
-import com.lbc.config.CacheConfiguration;
-import com.lbc.refresh.StatusMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.lbc.CacheContext;
+import com.lbc.refresh.RefreshExecutor;
 import com.lbc.refresh.Refresher;
 import com.lbc.refresh.StatusAcquirer;
+import com.lbc.refresh.StatusMonitor;
 
 /**
  * Description:  
@@ -19,30 +24,42 @@ import com.lbc.refresh.StatusAcquirer;
  */
 public class PolllingRefreshMonitor implements StatusMonitor,PollingMonitor {
 
-    private Map keyLoaders;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private Refresher refresher;
     private StatusAcquirer statusAcquirer;
-    private CacheConfiguration configuration;
+    private CacheContext cacheContext;
     
-    public PolllingRefreshMonitor(Cache cache,CacheConfiguration configuration) {
-        
+    public PolllingRefreshMonitor(CacheContext cacheContext) {
+        this.cacheContext = cacheContext;
+        refresher = new RefreshExecutor(cacheContext);
     }
     
     
     @Override
     public void startMonitoring() {
-        while(true) {
-            keyLoaders.forEach((k,v)->{
-                if(statusAcquirer.needRefresh(k)) {
-                    refresher.refresh(k);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            
+            @Override
+            public void run() {
+                while(true) {
+                    Map<?, ?> keyLoaders = cacheContext.getGloableSingleCache().getAllKeyMap();
+                    keyLoaders.forEach((k,v)->{
+                        logger.debug("判断key:{}是否需要刷新",k);
+                        if(statusAcquirer.needRefresh(k)) {
+                            logger.info("开始刷新缓存，key:{}",k);
+                            refresher.refresh(k);
+                        }
+                    });
+                    try {
+                        Thread.sleep(cacheContext.getConfiguration().getIntervalMills());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            });
-            try {
-                Thread.sleep(configuration.getIntervalMills());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
+        });
     }
 
 
@@ -50,5 +67,5 @@ public class PolllingRefreshMonitor implements StatusMonitor,PollingMonitor {
     public void setStatusAcquirer(StatusAcquirer sAcquirer) {
         this.statusAcquirer = sAcquirer;
     }
-    
+
 }

@@ -13,6 +13,11 @@ import org.apache.ibatis.annotations.Update;
 
 import com.lbc.test.module.user.entity.UserEntity;
 
+/**
+ * Description:  
+ * Date: 2018年3月2日 下午2:38:28
+ * @author wufenyun 
+ */
 @Mapper
 public interface UserMapper {
 
@@ -34,20 +39,20 @@ public interface UserMapper {
     UserEntity getUserById(Long id);
     
     @Select("SELECT * FROM users WHERE name = #{name}")
-    @Results({
+    /*@Results({
         @Result(property = "insertTime",  column = "insert_time"),
         @Result(property = "updateIime", column = "update_time")
-    })
+    })*/
     UserEntity getUserByName(String name);
     
     @Select("SELECT * FROM users WHERE name = #{name} and address=#{address}")
-    @Results({
+   /* @Results({
         @Result(property = "insertTime",  column = "insert_time"),
         @Result(property = "updateIime", column = "update_time")
-    })
+    })*/
     UserEntity getUser(@Param("name")String name,@Param("address")String address);
 
-    @Insert("INSERT INTO users(name,address,mail,insert_time,update_time) VALUES(#{name}, #{address}, #{mail}, #{insertTime},#{updateIime})")
+    @Insert("INSERT INTO users(name,address,mail,insertTime,updatetime) VALUES(#{name}, #{address}, #{mail}, #{insertTime},#{updateIime})")
     int insert(UserEntity user);
 
     @Update("UPDATE users SET name=#{name} WHERE id =#{id}")

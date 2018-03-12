@@ -10,6 +10,11 @@ import com.lbc.exchanger.CacheExchanger;
 import com.lbc.test.module.user.dao.UserMapper;
 import com.lbc.test.module.user.entity.UserEntity;
 
+/**
+ * Description:  
+ * Date: 2018年3月2日 下午2:38:28
+ * @author wufenyun 
+ */
 @Service
 public class UserLoader implements CacheExchanger<String, UserEntity> {
 
@@ -19,7 +24,7 @@ public class UserLoader implements CacheExchanger<String, UserEntity> {
 	private UserService userService;
 
 	@Override
-	public Collection<UserEntity> initialize() throws Exception {
+	public Collection<UserEntity> prelaoding() throws Exception {
 	    List<UserEntity> list = userMapper.getAll();
 		return list;
 	}
@@ -27,11 +32,11 @@ public class UserLoader implements CacheExchanger<String, UserEntity> {
 	@Override
 	public Collection<UserEntity> load(String key) throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		return prelaoding();
 	}
 
 	@Override
-	public String initializeKey() {
+	public String prelaodingKey() {
 		return "user";
 	}
 

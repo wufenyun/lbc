@@ -5,8 +5,6 @@
 package com.lbc;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,20 +41,13 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
     private ApplicationContext applicationContext;
     
-    private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
-    private Map<Class<? extends CacheExchanger<?, ?>>, CacheExchanger> allKeyMap = new ConcurrentHashMap<>();
-    
     private CacheConfiguration configuration;
     private LocalCache cache;
     private StatusMonitor monitor;
 
     @Override
-    public Cache openSingletonCache() {
+    public Cache getGloableSingleCache() {
         return cache;
-    }
-    
-    public void regist(Object key, CacheExchanger<?,?> exchanger) {
-        initialedKeyMap.put(key, exchanger);
     }
 
     @Override
@@ -83,7 +74,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     }
     
     private void initPollMonitor() {
-        this.monitor = new PolllingRefreshMonitor(cache, configuration);
+        this.monitor = new PolllingRefreshMonitor(this);
         StatusAcquirer sAcquirer = null;
         try {
             sAcquirer = applicationContext.getBean(StatusAcquirer.class);
@@ -123,15 +114,16 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
 
     private void registLoaders(CacheExchanger<?,?> cacheExchanger) {
         logger.info("注册需要初始加载的缓存加载器：" + cacheExchanger.getClass());
-        cache.regist(cacheExchanger.initializeKey(), cacheExchanger);
+        cache.regist(cacheExchanger.prelaodingKey(), cacheExchanger);
+        cache.registExchangerMapping(cacheExchanger.getClass(), cacheExchanger);
     }
 
-    public void initialize(CacheExchanger<?,?> cacheExchanger) {
+    public <K,V> void initialize(CacheExchanger<K,V> cacheExchanger) {
         logger.info("start to initialization cache");
-        Collection<?> initiaData;
+        Collection<V> initiaData;
         try {
-            initiaData = cacheExchanger.initialize();
-            cache.put(cacheExchanger.initializeKey(), initiaData);
+            initiaData = cacheExchanger.prelaoding();
+            cache.put(cacheExchanger.prelaodingKey(), initiaData,cacheExchanger);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,7 +137,8 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
-
+    
+    @Override
     public CacheConfiguration getConfiguration() {
         return configuration;
     }
@@ -157,18 +150,6 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     @Override
     public void destroy() throws Exception {
         cache = null;
-    }
-
-    @Override
-    public Map getKeyLoaders() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map getInitianizedKeys() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 

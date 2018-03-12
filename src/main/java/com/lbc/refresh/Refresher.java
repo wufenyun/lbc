@@ -5,13 +5,20 @@
 package com.lbc.refresh;
 
 /**
- * Description:  
+ * 缓存刷新器
  * Date: 2018年3月9日 上午9:51:37
  * @author wufenyun 
  */
 public interface Refresher {
     
+    /** 
+     * 根绝key刷新缓存
+     * @param key
+     */
     <K> void refresh(K key);
     
+    /** 
+     * 刷新所有缓存
+     */
     void refreshAll();
 }
