@@ -43,6 +43,14 @@
 			<artifactId>zkclient</artifactId>
 			<version>0.10</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.caucho/hessian -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.51</version>
+		</dependency>
+
 
 		<!--redis依赖 -->
 		<dependency>

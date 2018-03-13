@@ -12,10 +12,16 @@ package com.lbc.refresh;
 public interface Refresher {
     
     /** 
-     * 根绝key刷新缓存
+     * 根据key刷新缓存
      * @param key
      */
     <K> void refresh(K key);
+    
+    /** 
+     * 根据多个key刷新缓存
+     * @param keys
+     */
+    <K> void refresh(K[] keys);
     
     /** 
      * 刷新所有缓存

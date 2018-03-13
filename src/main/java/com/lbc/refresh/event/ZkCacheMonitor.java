@@ -5,9 +5,7 @@
 package com.lbc.refresh.event;
 
 import java.util.List;
-import java.util.Map;
 
-import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
@@ -20,6 +18,8 @@ import com.lbc.CacheContext;
 import com.lbc.refresh.RefreshExecutor;
 import com.lbc.refresh.Refresher;
 import com.lbc.refresh.StatusMonitor;
+import com.lbc.refresh.event.support.LbcZkSerializer;
+import com.lbc.refresh.event.support.ZkCacheStatusChanger.SatatusData;
 
 /**
  * Description:  
@@ -43,40 +43,26 @@ public class ZkCacheMonitor implements StatusMonitor,IZkDataListener {
     @Override
     public void startMonitoring() {
         client = new ZkClient(cacheContext.getConfiguration().getZkConnection());
+        client.setZkSerializer(new LbcZkSerializer());
         String path = cacheContext.getConfiguration().getRootPath();
         if(!client.exists(path)) {
-            client.createPersistent(path, System.currentTimeMillis());
+            client.createPersistent(path);
         }
         
-        Map<?, ?> keyLoaders = cacheContext.getGloableSingleCache().getAllKeyMap();
-        keyLoaders.forEach((k,v)->{
-            String pt = path+"/" + k;
-            logger.info("zk上创建节点:{}是否需要刷新",pt);
-            client.createEphemeral(pt);
-            client.subscribeDataChanges(pt, this);
-        });
-        
-        //client.subscribeChildChanges(path, this);
+        client.subscribeDataChanges(path, this);
     }
 
     @Override
     public void handleDataChange(String dataPath, Object data) throws Exception {
-        System.out.println(dataPath + "has changed");
-        //dataPath.
-        refresher.refresh("key");
+        SatatusData statusData = (SatatusData) data;
+        refresher.refresh(statusData.getKeys());
+        System.out.println(dataPath + "has changed:" + statusData.toString());
     }
 
     @Override
     public void handleDataDeleted(String dataPath) throws Exception {
-        // TODO Auto-generated method stub
-        
+        System.out.println(dataPath+"deleted");
     }
-
-    /*@Override
-    public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-        System.out.println(parentPath + "has changed");
-        refresher.refresh("key");
-    }*/
 
     
     public void createPersistent(String path) {

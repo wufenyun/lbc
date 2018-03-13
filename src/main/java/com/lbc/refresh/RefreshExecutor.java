@@ -39,6 +39,9 @@ public class RefreshExecutor implements Refresher {
     
     @Override
     public <K> void refresh(K key) {
+        if(null == key) {
+            return;
+        }
         Cache cache = context.getGloableSingleCache();
         CacheExchanger<?, ?> exchanger = cache.getAllKeyMap().get(key);
         executor.submit(new RefreshTask(cache, key, exchanger));
@@ -47,6 +50,17 @@ public class RefreshExecutor implements Refresher {
     @Override
     public void refreshAll() {
         
+    }
+
+    @Override
+    public <K> void refresh(K[] keys) {
+        if(null == keys || keys.length == 0) {
+            return;
+        }
+        
+        for(int i=0;i<keys.length;i++) {
+            refresh(keys[i]);
+        }
     }
 
 }

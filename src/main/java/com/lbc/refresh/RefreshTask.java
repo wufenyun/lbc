@@ -37,8 +37,8 @@ public class RefreshTask<K,V> implements Runnable {
         Collection<V> data;
         try {
             data = exchanger.load(key);
-            logger.info("data:{}",data);
             cache.replace(key,data);        
+            logger.info("finished refresh the {}'s data:{}",key,data);
         } catch (Exception e) {
             e.printStackTrace();
         }

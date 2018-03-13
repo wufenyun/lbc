@@ -20,7 +20,7 @@ public class ZkStatusChangerTest {
 
     @Test
     public void change() {
-        statusChanger.updateStatus("user", System.currentTimeMillis());
+        statusChanger.updateStatus("category","user");
     }
     
 }

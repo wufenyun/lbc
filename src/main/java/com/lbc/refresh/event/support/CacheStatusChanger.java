@@ -11,5 +11,5 @@ package com.lbc.refresh.event.support;
  */
 public interface CacheStatusChanger {
 
-    void updateStatus(String key,Object data);
+    void updateStatus(Object... keys);
 }

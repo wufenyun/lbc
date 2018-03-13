@@ -6,7 +6,9 @@ package com.lbc.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -48,5 +50,27 @@ public class SimpleQueryingCollectionTest {
         list.add(c1);
         list.add(c2);
         return list;
+    }
+    
+    
+    @Test
+    public void concurrentMap() {
+        Map<String,String> map = new HashMap<>();
+        new Thread(new Runnable(){
+
+            @Override
+            public void run() {
+                while(true) {
+                    map.put(System.currentTimeMillis()+"", System.currentTimeMillis()+"");
+                }
+            }
+            
+        }).start();
+        
+        while(true) {
+            map.forEach((k,v)->{
+                System.out.println(k);
+            });
+        }
     }
 }
