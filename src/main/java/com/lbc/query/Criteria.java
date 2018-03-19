@@ -10,9 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lbc.support.PropertyUtil;
 
 /**
@@ -22,7 +19,7 @@ import com.lbc.support.PropertyUtil;
  */
 public class Criteria implements CriteriaDefinition {
     
-    private static Logger logger = LoggerFactory.getLogger(Criteria.class);
+    private final static Object NULL_CONSTANT = new Object();
     
     private String key;
     private List<Criteria> criteriaChain;
@@ -53,7 +50,11 @@ public class Criteria implements CriteriaDefinition {
     }
     
     public Criteria is(Object value) {
-        conditions.put(Operator.IS, value);
+        if(null == value) {
+            conditions.put(Operator.IS, NULL_CONSTANT);
+        } else {
+            conditions.put(Operator.IS, value);
+        }
         return this;
     }
     
@@ -111,11 +112,19 @@ public class Criteria implements CriteriaDefinition {
     
     private boolean domatch(Operator operator,Object origin,Object target) {
         switch(operator) {
-        case IS:return origin.equals(target);
+        case IS:return isEqual(origin,target);
         case NE:return origin!=target;
         //case LT:return origin > target;
         case IN:return ((Collection<?>)target).contains(origin);
         default:return false;
+        }
+    }
+    
+    private boolean isEqual(Object origin,Object target) {
+        if(NULL_CONSTANT == target) {
+            return origin == null;
+        } else {
+            return target.equals(origin);
         }
     }
     

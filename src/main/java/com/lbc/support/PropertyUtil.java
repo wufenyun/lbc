@@ -11,17 +11,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Description: 属性工具类
  * Date: 2017年7月6日 上午10:26:40
  * @author wufenyun 
  */
 public class PropertyUtil {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyUtil.class);
     
     /** 
      * Description: 获取对象的指定属性值
@@ -40,7 +35,7 @@ public class PropertyUtil {
             Method md = dsc.getReadMethod();
             return md.invoke(source);
         } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            LOGGER.error("get field-{} value failed!",fieldName, e);
+            //LOGGER.error("get field-{} value failed!",fieldName, e);
             throw new BeanException("get field value failed!", e);
         }
     }

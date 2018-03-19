@@ -1,9 +1,10 @@
 package com.lbc.query;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lbc.support.BeanUtil;
 
 /**
  * Description:  
@@ -12,8 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Query {
     
-    private final static Logger logger = LoggerFactory.getLogger(Query.class);
-    
     private Criteria criteria;
     
     public Query() {
@@ -21,6 +20,19 @@ public class Query {
     
     public Query(Criteria criteriaDefinition) {
         criteria = criteriaDefinition;
+    }
+    
+    public <T> Query(Example<T> example) {
+        T source = example.getOrigin();
+        Map<String, Object> nv = BeanUtil.getPVMapIgnoreNull(source);
+        criteria = new Criteria();
+        for(Entry<String, Object> entry:nv.entrySet()) {
+            criteria.and(entry.getKey()).is(entry.getValue());
+        }
+    }
+    
+    public static <T> Query query(Example<T> example) {
+        return new Query(example);
     }
     
     public static Query query(Criteria criteriaDefinition) {

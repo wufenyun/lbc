@@ -2,17 +2,16 @@
  * Package: com.lbc.test
  * Description: 
  */
-package com.lbc.test;
+package com.lbc.test.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
 import com.lbc.query.Criteria;
+import com.lbc.query.Example;
 import com.lbc.query.Query;
 import com.lbc.test.module.user.entity.Category;
 import com.lbc.wrap.SimpleQueryingCollection;
@@ -25,12 +24,24 @@ import com.lbc.wrap.SimpleQueryingCollection;
 public class SimpleQueryingCollectionTest {
 
     @Test
-    public void demo() {
+    public void queryByCritreia() {
         SimpleQueryingCollection<String,Category> co = new SimpleQueryingCollection<String,Category>();
         co.wrap(getList());
         Query query = Query.query(Criteria.where("categoryId").is(1)
                 .and("level").is(1)
                 .and("status").in(Arrays.asList(0,1)));
+        
+        List<Category> result = co.query(query);
+        System.out.println(result.size());
+    }
+    
+    @Test
+    public void queryByExample() {
+        SimpleQueryingCollection<String,Category> co = new SimpleQueryingCollection<String,Category>();
+        co.wrap(getList());
+        Category category = new Category();
+        category.setStatus(1);
+        Query query = Query.query(Example.of(category));
         
         List<Category> result = co.query(query);
         System.out.println(result.size());
@@ -45,6 +56,7 @@ public class SimpleQueryingCollectionTest {
         Category c2 = new Category();
         c2.setCategoryId(2);
         c2.setLevel(2);
+        c2.setStatus(1);
         
         List<Category> list = new ArrayList<>();
         list.add(c1);
@@ -53,24 +65,4 @@ public class SimpleQueryingCollectionTest {
     }
     
     
-    @Test
-    public void concurrentMap() {
-        Map<String,String> map = new HashMap<>();
-        new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                while(true) {
-                    map.put(System.currentTimeMillis()+"", System.currentTimeMillis()+"");
-                }
-            }
-            
-        }).start();
-        
-        while(true) {
-            map.forEach((k,v)->{
-                System.out.println(k);
-            });
-        }
-    }
 }
