@@ -12,48 +12,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lbc.CacheContext;
-import com.lbc.refresh.RefreshExecutor;
-import com.lbc.refresh.Refresher;
+import com.lbc.refresh.AbstractRefreshMonitor;
 import com.lbc.refresh.StatusAcquirer;
-import com.lbc.refresh.StatusMonitor;
 
 /**
  * Description:  
  * Date: 2018年3月9日 上午11:08:03
  * @author wufenyun 
  */
-public class PolllingRefreshMonitor implements StatusMonitor,PollingMonitor {
+public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Polling {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    private Refresher refresher;
     private StatusAcquirer statusAcquirer;
-    private CacheContext cacheContext;
     
-    public PolllingRefreshMonitor(CacheContext cacheContext) {
-        this.cacheContext = cacheContext;
-        refresher = new RefreshExecutor(cacheContext);
+    public PolllingRefreshMonitor(CacheContext context) {
+        super(context);
     }
     
-    
     @Override
-    public void startMonitoring() {
+    public void doMonitor() {
+        if(null == statusAcquirer) {
+            logger.warn("用户未创建缓存状态获取器(StatusAcquirer)，缓存将不会刷新，请注意！！！！！！！！！");
+            return;
+        }
+        
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             
             @Override
             public void run() {
                 while(true) {
-                    Map<?, ?> keyLoaders = cacheContext.getGloableSingleCache().getAllKeyMap();
+                    Map<?, ?> keyLoaders = context.getGloableSingleCache().getAllKeyMap();
                     keyLoaders.forEach((k,v)->{
                         logger.debug("判断key:{}是否需要刷新",k);
                         if(statusAcquirer.needRefresh(k)) {
-                            logger.info("开始刷新缓存，key:{}",k);
-                            refresher.refresh(k);
+                            notifyRefresh(k);
                         }
                     });
                     try {
-                        Thread.sleep(cacheContext.getConfiguration().getIntervalMills());
+                        Thread.sleep(context.getConfiguration().getIntervalMills());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -67,5 +65,7 @@ public class PolllingRefreshMonitor implements StatusMonitor,PollingMonitor {
     public void setStatusAcquirer(StatusAcquirer sAcquirer) {
         this.statusAcquirer = sAcquirer;
     }
+
+
 
 }

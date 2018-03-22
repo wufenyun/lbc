@@ -11,13 +11,9 @@ import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.lbc.CacheContext;
-import com.lbc.refresh.RefreshExecutor;
-import com.lbc.refresh.Refresher;
-import com.lbc.refresh.StatusMonitor;
+import com.lbc.refresh.AbstractRefreshMonitor;
 import com.lbc.refresh.event.support.LbcZkSerializer;
 import com.lbc.refresh.event.support.ZkCacheStatusChanger.SatatusData;
 
@@ -26,25 +22,20 @@ import com.lbc.refresh.event.support.ZkCacheStatusChanger.SatatusData;
  * Date: 2018年3月9日 下午5:10:59
  * @author wufenyun 
  */
-public class ZkCacheMonitor implements StatusMonitor,IZkDataListener {
+public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataListener {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    private Refresher refresher;
-    private CacheContext cacheContext;
     private ZkClient client;
     private volatile KeeperState state = KeeperState.SyncConnected;
     
-    public ZkCacheMonitor(CacheContext cacheContext) {
-        this.cacheContext = cacheContext;
-        refresher = new RefreshExecutor(cacheContext);
+    public ZkCacheMonitor(CacheContext context) {
+        super(context);
     }
     
     @Override
-    public void startMonitoring() {
-        client = new ZkClient(cacheContext.getConfiguration().getZkConnection());
+    public void doMonitor() {
+        client = new ZkClient(context.getConfiguration().getZkConnection());
         client.setZkSerializer(new LbcZkSerializer());
-        String path = cacheContext.getConfiguration().getRootPath();
+        String path = context.getConfiguration().getRootPath();
         if(!client.exists(path)) {
             client.createPersistent(path);
         }
@@ -55,7 +46,7 @@ public class ZkCacheMonitor implements StatusMonitor,IZkDataListener {
     @Override
     public void handleDataChange(String dataPath, Object data) throws Exception {
         SatatusData statusData = (SatatusData) data;
-        refresher.refresh(statusData.getKeys());
+        notifyRefresh(statusData.getKeys());
         System.out.println(dataPath + "has changed:" + statusData.toString());
     }
 
@@ -64,7 +55,6 @@ public class ZkCacheMonitor implements StatusMonitor,IZkDataListener {
         System.out.println(dataPath+"deleted");
     }
 
-    
     public void createPersistent(String path) {
         try {
             client.createPersistent(path, true);

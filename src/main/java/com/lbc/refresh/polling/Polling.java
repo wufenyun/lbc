@@ -4,7 +4,6 @@
  */
 package com.lbc.refresh.polling;
 
-import com.lbc.refresh.StatusMonitor;
 import com.lbc.refresh.StatusAcquirer;
 
 /**
@@ -12,7 +11,7 @@ import com.lbc.refresh.StatusAcquirer;
  * Date: 2018年3月9日 下午5:16:50
  * @author wufenyun 
  */
-public interface PollingMonitor extends StatusMonitor {
+public interface Polling {
     
     /** 
      * 设置缓存状态获取器

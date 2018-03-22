@@ -16,4 +16,30 @@ public interface StatusMonitor {
      */
     void startMonitoring();
     
+    void notifyRefresh(Object[] keys);
+    
+    void notifyRefresh(Object key);
+    
+    /**
+     * 缓存刷新器
+     */
+    interface Refresher {
+        
+        /** 
+         * 根据key刷新缓存
+         * @param key
+         */
+        <K> void refresh(K key);
+        
+        /** 
+         * 根据多个key刷新缓存
+         * @param keys
+         */
+        <K> void refresh(K[] keys);
+        
+        /** 
+         * 刷新所有缓存
+         */
+        void refreshAll();
+    }
 }

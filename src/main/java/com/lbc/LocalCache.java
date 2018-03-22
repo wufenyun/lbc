@@ -35,11 +35,13 @@ public class LocalCache implements Cache {
         exchangerMapping.put(clazz, exchanger);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <K, V> QueryingCollection<K, V> get(K key) {
         return (QueryingCollection<K, V>) storage.get(key);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <K, V> QueryingCollection<K, V> get(K key,Class<? extends CacheExchanger<K, V>> clazz) {
         QueryingCollection<K, V> value = (QueryingCollection<K, V>) storage.get(key);
@@ -93,6 +95,7 @@ public class LocalCache implements Cache {
         this.initialedKeyMap = initialedCache;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public Map<Object, CacheExchanger<?,?>> getAllKeyMap() {
         return allKeyMap;

@@ -26,7 +26,7 @@ import com.lbc.exchanger.CacheExchanger;
 import com.lbc.refresh.StatusAcquirer;
 import com.lbc.refresh.StatusMonitor;
 import com.lbc.refresh.event.ZkCacheMonitor;
-import com.lbc.refresh.polling.PollingMonitor;
+import com.lbc.refresh.polling.Polling;
 import com.lbc.refresh.polling.PolllingRefreshMonitor;
 
 /**
@@ -62,7 +62,16 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
      */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        logger.info("spring容器启动完毕，开始缓存监控任务");
+        //cache对象为空，说明不需要使用批量缓存功能
+        if((null == cache)) {
+            return;
+        }
+        
+        //防止ContextRefreshedEvent事件发生多次
+        if((null != event.getApplicationContext().getParent())) {
+            return;
+        }
+        
         cache.setContext(this);
         
         switch(configuration.getMonitorModel()) {
@@ -84,7 +93,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
             logger.warn("用户未创建缓存状态获取器(StatusAcquirer)，缓存将不会刷新，请注意！！！！！！！！！");
             return;
         }
-        PollingMonitor pmonitor = (PollingMonitor)monitor;
+        Polling pmonitor = (Polling)monitor;
         pmonitor.setStatusAcquirer(sAcquirer);
         monitor.startMonitoring();
     }
@@ -104,6 +113,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof CacheExchanger) {
+            logger.info("......................." + bean.getClass()+".......................");
             if(null == cache) {
                 this.cache = applicationContext.getBean(LocalCache.class);
             }
