@@ -4,7 +4,7 @@
  */
 package com.lbc;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.lbc.exchanger.CacheExchanger;
@@ -25,7 +25,7 @@ public interface Cache {
      * @param clazz 缓存交换器Class类型
      * @return 可查询的缓存集合
      */
-    <K, V> QueryingCollection<K, V> get(K key,Class<? extends CacheExchanger<K, V>> clazz);
+    <K, V> QueryingCollection<V> get(K key,Class<? extends CacheExchanger<K, V>> clazz);
 
     /** 
      * 根据key获取缓存集合，返回的集合对象提供查询功能；
@@ -33,7 +33,7 @@ public interface Cache {
      * @param key 键值
      * @return 可查询的缓存集合
      */
-    <K, V> QueryingCollection<K, V> get(K key);
+    <K, V> QueryingCollection<V> get(K key);
     
     /** 
      * 刷新缓存
@@ -58,7 +58,7 @@ public interface Cache {
      * @param key
      * @param data
      */
-    <K,V> void replace(K key, Collection<V> data);
+    <K,V> void replace(K key, List<V> data);
 
     /** 
      * 向缓存中存入数据
@@ -66,6 +66,6 @@ public interface Cache {
      * @param data 值
      * @param exchanger 缓存交换器
      */
-    <K, V> void put(K key, Collection<V> data, CacheExchanger<K, V> exchanger);
+    <K, V> void put(K key, List<V> data, CacheExchanger<K, V> exchanger);
 
 }

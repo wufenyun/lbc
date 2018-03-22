@@ -4,7 +4,7 @@
  */
 package com.lbc.exchanger;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 缓存加载器，负责加载数据到内存
@@ -19,6 +19,6 @@ public interface CacheLoader<K,V> {
      * @return
      * @throws Exception 加载可能会抛异常
      */
-    Collection<V> load(K key) throws Exception;
+    List<V> load(K key) throws Exception;
     
 }

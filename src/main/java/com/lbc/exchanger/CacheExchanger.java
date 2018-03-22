@@ -4,7 +4,7 @@
  */
 package com.lbc.exchanger;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 缓存交换器，除了具备缓存加载器的加载数据到内存的功能，
@@ -26,6 +26,6 @@ public interface CacheExchanger<K,V> extends CacheLoader<K,V> {
      * @return
      * @throws Exception
      */
-    Collection<V> prelaoding() throws Exception;
+    List<V> prelaoding() throws Exception;
     
 }

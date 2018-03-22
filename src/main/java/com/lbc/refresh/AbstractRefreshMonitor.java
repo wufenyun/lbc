@@ -53,13 +53,22 @@ public abstract class AbstractRefreshMonitor implements StatusMonitor {
         refreshExecutor.refresh(key);
     }
     
+    @Override
+    public void close() {
+        doClose();
+        refreshExecutor.closeRefresher();
+    }
+    
     /** 
      * 执行监控任务，具体实现由子类实现;
      * 如果有刷新缓存事件发生，通知刷新-notifyRefresh()
      */
     protected abstract void doMonitor();
     
-    
+    /** 
+     * 关闭监控器，由具体子类实现
+     */
+    protected abstract void doClose();
     
     class RefreshExecutor implements Refresher {
 
@@ -101,6 +110,12 @@ public abstract class AbstractRefreshMonitor implements StatusMonitor {
             
             for(int i=0;i<keys.length;i++) {
                 refresh(keys[i]);
+            }
+        }
+        
+        public void closeRefresher() {
+            if(null != executor) {
+                executor.shutdown();
             }
         }
     }

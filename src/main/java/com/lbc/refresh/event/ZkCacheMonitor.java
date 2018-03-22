@@ -32,7 +32,7 @@ public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataLis
     }
     
     @Override
-    public void doMonitor() {
+    protected void doMonitor() {
         client = new ZkClient(context.getConfiguration().getZkConnection());
         client.setZkSerializer(new LbcZkSerializer());
         String path = context.getConfiguration().getRootPath();
@@ -41,6 +41,13 @@ public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataLis
         }
         
         client.subscribeDataChanges(path, this);
+    }
+    
+    @Override
+    protected void doClose() {
+        if(null != client) {
+            client.close();
+        }
     }
 
     @Override
@@ -87,11 +94,5 @@ public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataLis
     public boolean isConnected() {
         return state == KeeperState.SyncConnected;
     }
-
-    public void doClose() {
-        client.close();
-    }
-
-    
 
 }

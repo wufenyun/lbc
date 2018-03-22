@@ -1,6 +1,6 @@
 package com.lbc;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +21,7 @@ public class LocalCache implements Cache {
     
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
     
-    private Map<Object, QueryingCollection<?, ?>> storage = new ConcurrentHashMap<>();
+    private Map<Object, QueryingCollection<?>> storage = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheExchanger<?, ?>> exchangerMapping = new ConcurrentHashMap<>();
@@ -37,17 +37,17 @@ public class LocalCache implements Cache {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <K, V> QueryingCollection<K, V> get(K key) {
-        return (QueryingCollection<K, V>) storage.get(key);
+    public <K, V> QueryingCollection<V> get(K key) {
+        return (QueryingCollection<V>) storage.get(key);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public <K, V> QueryingCollection<K, V> get(K key,Class<? extends CacheExchanger<K, V>> clazz) {
-        QueryingCollection<K, V> value = (QueryingCollection<K, V>) storage.get(key);
+    public <K, V> QueryingCollection<V> get(K key,Class<? extends CacheExchanger<K, V>> clazz) {
+        QueryingCollection<V> value = (QueryingCollection<V>) storage.get(key);
         synchronized (key) {
             if(null == value) {
-            	Collection<V> data;
+                List<V> data;
                 try {
                     CacheExchanger<K, V> exchanger = (CacheExchanger<K, V>) exchangerMapping.get(clazz);
                     if(null == exchanger) {
@@ -61,7 +61,7 @@ public class LocalCache implements Cache {
                 }
             }
         }
-        return (QueryingCollection<K, V>) storage.get(key);
+        return (QueryingCollection<V>) storage.get(key);
     }
     
     @Override
@@ -70,8 +70,8 @@ public class LocalCache implements Cache {
     }
 
     @Override
-    public <K,V> void put(K key, Collection<V> data,CacheExchanger<K, V> exchanger) {
-        QueryingCollection<K,V> wrapper = new SimpleQueryingCollection<>();
+    public <K,V> void put(K key, List<V> data,CacheExchanger<K, V> exchanger) {
+        QueryingCollection<V> wrapper = new SimpleQueryingCollection<>();
         wrapper.wrap(data);
         storage.put(key, wrapper);
         allKeyMap.put(key, exchanger);
@@ -79,8 +79,8 @@ public class LocalCache implements Cache {
     }
 
     @Override
-    public <K, V> void replace(K key, Collection<V> value) {
-        QueryingCollection<K,V> wrapper = new SimpleQueryingCollection<>();
+    public <K, V> void replace(K key, List<V> value) {
+        QueryingCollection<V> wrapper = new SimpleQueryingCollection<>();
         wrapper.wrap(value);
         storage.replace(key, wrapper);
     }
@@ -108,5 +108,6 @@ public class LocalCache implements Cache {
     public void setContext(CacheContext context) {
         this.context = context;
     }
+
 
 }

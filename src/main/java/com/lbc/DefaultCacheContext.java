@@ -4,7 +4,7 @@
  */
 package com.lbc;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,16 +39,11 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
         ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
-    private ApplicationContext applicationContext;
     
+    private ApplicationContext applicationContext;
     private CacheConfiguration configuration;
     private LocalCache cache;
     private StatusMonitor monitor;
-
-    @Override
-    public Cache getGloableSingleCache() {
-        return cache;
-    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -106,7 +101,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(LocalCache.class);
-        logger.info("向容器中注册LocalCache BeanDefinition");
+        logger.debug("向容器中注册LocalCache BeanDefinition");
         registry.registerBeanDefinition("localCache", beanDefinition);
     }
 
@@ -132,13 +127,18 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
 
     public <K,V> void initialize(CacheExchanger<K,V> cacheExchanger) {
         logger.info("start to initialization cache");
-        Collection<V> initiaData;
+        List<V> initiaData;
         try {
             initiaData = cacheExchanger.prelaoding();
             cache.put(cacheExchanger.prelaodingKey(), initiaData,cacheExchanger);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public Cache getGloableSingleCache() {
+        return cache;
     }
     
     @Override
@@ -161,6 +161,11 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
 
     @Override
     public void destroy() throws Exception {
+        //关闭监控器
+        if(null != monitor) {
+            monitor.close();
+        }
+        
         cache = null;
     }
 

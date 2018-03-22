@@ -1,6 +1,6 @@
 package com.lbc.wrap;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 import com.lbc.query.Queriable;
@@ -12,23 +12,23 @@ import com.lbc.query.Queriable;
  * @param <V>
  * @date 2018年3月3日 上午10:53:32
  */
-public interface QueryingCollection<K, V> extends Queriable<V> {
+public interface QueryingCollection<V> extends Queriable<V> {
 	
 	/** 
 	 * 封装集合对象
 	 * @param v
 	 */
-	void wrap(Collection<V> v);
+	void wrap(List<V> v);
 	
 	/** 
 	 * 以Map集合
 	 * @return
 	 */
-	ConcurrentMap<K, V> asMap();
+	<K> ConcurrentMap<K, V> asMap();
 	
 	/** 
 	 * 返回原始数据集
 	 * @return
 	 */
-	Collection<V> data();
+	List<V> data();
 }

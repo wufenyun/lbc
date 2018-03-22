@@ -25,6 +25,7 @@ public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Po
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private StatusAcquirer statusAcquirer;
+    private ExecutorService executorService;
     
     public PolllingRefreshMonitor(CacheContext context) {
         super(context);
@@ -37,7 +38,7 @@ public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Po
             return;
         }
         
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             
             @Override
@@ -64,6 +65,13 @@ public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Po
     @Override
     public void setStatusAcquirer(StatusAcquirer sAcquirer) {
         this.statusAcquirer = sAcquirer;
+    }
+
+    @Override
+    public void doClose() {
+        if(null != executorService) {
+            executorService.shutdown();
+        }
     }
 
 

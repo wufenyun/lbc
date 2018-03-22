@@ -20,6 +20,8 @@ public interface StatusMonitor {
     
     void notifyRefresh(Object key);
     
+    void close();
+    
     /**
      * 缓存刷新器
      */
