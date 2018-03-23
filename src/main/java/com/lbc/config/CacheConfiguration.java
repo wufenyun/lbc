@@ -24,8 +24,13 @@ public class CacheConfiguration {
      */
     private int refreshThreads = 1;
     
-    private MonitorModel monitorModel = MonitorModel.POLLING;
     
+    /**
+     * 缓存最大阈值，按key的多少计算，默认-1(即不限制缓存数量)，用户可以自己设定
+     */
+    private int cacheSizeThreshold = 16;
+    
+    private MonitorModel monitorModel = MonitorModel.POLLING;
     /**
      * zookeeper地址
      */
@@ -89,6 +94,14 @@ public class CacheConfiguration {
 
     public void setRootPath(String rootPath) {
         this.rootPath = rootPath;
+    }
+
+    public int getCacheSizeThreshold() {
+        return cacheSizeThreshold;
+    }
+
+    public void setCacheSizeThreshold(int cacheSizeThreshold) {
+        this.cacheSizeThreshold = cacheSizeThreshold;
     }
 
 }

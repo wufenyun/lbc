@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lbc.config.CacheConfiguration;
 import com.lbc.exchanger.CacheExchanger;
+import com.lbc.support.AssertUtil;
 import com.lbc.wrap.QueryingCollection;
 import com.lbc.wrap.SimpleQueryingCollection;
 
@@ -25,8 +27,23 @@ public class LocalCache implements Cache {
     private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheExchanger<?, ?>> exchangerMapping = new ConcurrentHashMap<>();
-    private CacheContext context;
-
+    private LruSupport lruLinkedSupport;
+    private boolean isLruCache;
+    
+    private CacheConfiguration config;
+    
+    /** 
+     * 初始化
+     * @param context
+     */
+    public void init(CacheContext context) {
+        this.config = context.getConfiguration();
+        if(config.getCacheSizeThreshold() > 0) {
+            isLruCache = true;
+            lruLinkedSupport = new LruSupport(config.getCacheSizeThreshold());
+        }
+    }
+    
     public void regist(Object key, CacheExchanger<?,?> exchanger) {
         initialedKeyMap.put(key, exchanger);
     }
@@ -38,13 +55,45 @@ public class LocalCache implements Cache {
     @SuppressWarnings("unchecked")
     @Override
     public <K, V> QueryingCollection<V> get(K key) {
-        return (QueryingCollection<V>) storage.get(key);
+        AssertUtil.notNull(key, "key不能为空");
+        QueryingCollection<V> collection = (QueryingCollection<V>) storage.get(key);
+        
+        //如果为空，直接返回
+        if(null==collection) {
+            return collection;
+        }
+        
+        afterNodeGet(key);
+        return collection;
+    }
+    
+    
+    /** 
+     * 获取节点之后的操作，这里进行lru
+     * @param key
+     */
+    private void afterNodeGet(Object key) {
+        //如果不需要lru处理，直接返回
+        if((!isLruCache) || initialedKeyMap.containsKey(key)) {
+            return;
+        }
+        
+        synchronized(key) {
+            Object evictKey = lruLinkedSupport.getNeedReclaimedKey(key);
+            if(null != evictKey) {
+                storage.remove(evictKey);
+                allKeyMap.remove(evictKey);
+                logger.info("从缓存里移除LRU缓存,key={}",evictKey);
+            }
+        }
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public <K, V> QueryingCollection<V> get(K key,Class<? extends CacheExchanger<K, V>> clazz) {
-        QueryingCollection<V> value = (QueryingCollection<V>) storage.get(key);
+        AssertUtil.notNull(key, "key不能为空");
+        
+        QueryingCollection<?> value = storage.get(key);
         synchronized (key) {
             if(null == value) {
                 List<V> data;
@@ -55,18 +104,39 @@ public class LocalCache implements Cache {
                         return null;
                     }
                     data = exchanger.load(key);
+                    //如果为空，直接返回,这里需要考虑缓存穿透
+                    if(null==data) {
+                        return null;
+                    }
                     this.put(key,data,exchanger);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+        
+        afterNodeGet(key);
         return (QueryingCollection<V>) storage.get(key);
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public <K> void refresh(K k) {
+    public <K, V> QueryingCollection<V> refresh(K key) {
+        AssertUtil.notNull(key, "key不能为空");
+        CacheExchanger exchanger = allKeyMap.get(key);
+        if(null == exchanger) {
+            throw new IllegalArgumentException("无法通过key:"+key+"找到其缓存加载器，请确保相应key是正确的");
+        }
         
+        List<V> data;
+        try {
+            data = exchanger.load(key);
+            QueryingCollection<V> wrapper = new SimpleQueryingCollection<>();
+            wrapper.wrap(data);
+            return (QueryingCollection<V>) storage.replace(key, wrapper);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -75,7 +145,6 @@ public class LocalCache implements Cache {
         wrapper.wrap(data);
         storage.put(key, wrapper);
         allKeyMap.put(key, exchanger);
-        //context.
     }
 
     @Override
@@ -101,13 +170,5 @@ public class LocalCache implements Cache {
         return allKeyMap;
     }
 
-    public CacheContext getContext() {
-        return context;
-    }
-
-    public void setContext(CacheContext context) {
-        this.context = context;
-    }
-
-
+    
 }

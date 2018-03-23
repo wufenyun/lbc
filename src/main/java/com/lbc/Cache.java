@@ -38,8 +38,9 @@ public interface Cache {
     /** 
      * 刷新缓存
      * @param key 键值
+     * @return 旧值
      */
-    <K> void refresh(K key);
+    <K, V> QueryingCollection<V> refresh(K key);
     
     /** 
      * 获取应用启动时已经初始化了缓存键值对

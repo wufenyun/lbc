@@ -67,8 +67,6 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
             return;
         }
         
-        cache.setContext(this);
-        
         switch(configuration.getMonitorModel()) {
         case EVNET_ZK:
             initZKMonitor();break;
@@ -109,9 +107,6 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof CacheExchanger) {
             logger.info("......................." + bean.getClass()+".......................");
-            if(null == cache) {
-                this.cache = applicationContext.getBean(LocalCache.class);
-            }
             CacheExchanger<?,?> cacheExchanger = (CacheExchanger<?,?>) bean;
             registLoaders(cacheExchanger);
             initialize(cacheExchanger);
@@ -143,6 +138,10 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        if(null == cache) {
+            this.cache = applicationContext.getBean(LocalCache.class);
+            cache.init(this);
+        }
     }
 
     @Override
