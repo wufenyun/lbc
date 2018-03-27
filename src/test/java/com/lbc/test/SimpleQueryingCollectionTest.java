@@ -2,7 +2,7 @@
  * Package: com.lbc.test
  * Description: 
  */
-package com.lbc.test.util;
+package com.lbc.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.lbc.query.Criteria;
 import com.lbc.query.Example;
 import com.lbc.query.Query;
-import com.lbc.test.module.user.entity.Category;
 import com.lbc.wrap.SimpleQueryingCollection;
 
 /**
@@ -25,7 +24,7 @@ public class SimpleQueryingCollectionTest {
 
     @Test
     public void queryByCritreia() {
-        SimpleQueryingCollection<String,Category> co = new SimpleQueryingCollection<String,Category>();
+        SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
         co.wrap(getList());
         Query query = Query.query(Criteria.where("categoryId").is(1)
                 .and("level").is(1)
@@ -37,7 +36,7 @@ public class SimpleQueryingCollectionTest {
     
     @Test
     public void queryByExample() {
-        SimpleQueryingCollection<String,Category> co = new SimpleQueryingCollection<String,Category>();
+        SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
         co.wrap(getList());
         Category category = new Category();
         category.setStatus(1);

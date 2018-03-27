@@ -2,14 +2,13 @@
  * Package: com.lbc.support
  * Description: 
  */
-package com.lbc.test.util;
+package com.lbc.test;
 
 import java.util.Map;
 
 import org.junit.Test;
 
 import com.lbc.support.BeanUtil;
-import com.lbc.test.module.user.entity.Category;
 
 /**
  * Description:  

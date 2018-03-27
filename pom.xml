@@ -5,7 +5,7 @@
 
 	<groupId>com.github.wufenyun</groupId>
 	<artifactId>lbc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1.0-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>com.github.wufenyun:lbc</name>

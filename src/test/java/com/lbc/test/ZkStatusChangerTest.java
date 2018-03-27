@@ -16,11 +16,11 @@ import com.lbc.refresh.event.support.ZkCacheStatusChanger;
 public class ZkStatusChangerTest {
 
     private String connection = "127.0.0.1:2181";
-    private ZkCacheStatusChanger statusChanger = new ZkCacheStatusChanger(connection);
+    private ZkCacheStatusChanger statusChanger = new ZkCacheStatusChanger(connection,"category");
 
     @Test
     public void change() {
-        statusChanger.updateStatus("category","user");
+        statusChanger.updateStatus("category");
     }
     
 }
