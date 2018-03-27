@@ -9,6 +9,8 @@ import java.util.Arrays;
 
 import org.I0Itec.zkclient.ZkClient;
 
+import com.lbc.config.CacheConfiguration.Constant;
+
 /**
  * Description:  
  * Date: 2018年3月12日 下午5:53:41
@@ -17,19 +19,40 @@ import org.I0Itec.zkclient.ZkClient;
 public class ZkCacheStatusChanger implements CacheStatusChanger {
     
     private ZkClient client;
-    private String rootPath = "/localBatchCache";
+    private String refresherDataNodePath;
     
     public ZkCacheStatusChanger(String connection) {
         this.client = new ZkClient(connection);
         client.setZkSerializer(new LbcZkSerializer());
+        refresherDataNodePath = Constant.ROOTPATH + Constant.DEFAULT_ZKDATA_NODENAME;
+    }
+    
+    /**
+     * 为防止与其他应用key冲突,建议使用此构造函数指定refresherDataNodeName
+     * @param connection
+     * @param refresherDataNodeName zk数据节点名,需要更新的数据将会存储到这下面
+     */
+    public ZkCacheStatusChanger(String connection,String refresherDataNodeName) {
+        this.client = new ZkClient(connection);
+        client.setZkSerializer(new LbcZkSerializer());
+        refresherDataNodePath = getYourDataNodePath(refresherDataNodeName);
+    }
+    
+    private String getYourDataNodePath(String subNode) {
+        if(null==subNode || subNode.isEmpty()) {
+            return Constant.ROOTPATH + Constant.DEFAULT_ZKDATA_NODENAME;
+        }
+        
+        if(!subNode.startsWith("/")) {
+            subNode = "/" + subNode;
+        }
+        return Constant.ROOTPATH + subNode;
     }
     
     @Override
     public void updateStatus(Object... keys) {
-        //client.delete("/" + rootPath + "/" + key);
-        //client.createEphemeral("/" + rootPath + "/" + key, data);
         SatatusData satatusData = new SatatusData(keys);
-        client.writeData(rootPath, satatusData);
+        client.writeData(refresherDataNodePath, satatusData);
     }
     
     public static class SatatusData implements Serializable {
@@ -44,11 +67,6 @@ public class ZkCacheStatusChanger implements CacheStatusChanger {
             this.updateTime = System.currentTimeMillis();
         }
         
-        @Override
-        public String toString() {
-            return "SatatusData [keys=" + Arrays.toString(keys) + ", updateTime=" + updateTime + "]";
-        }
-
         public long getUpdateTime() {
             return updateTime;
         }
@@ -64,7 +82,12 @@ public class ZkCacheStatusChanger implements CacheStatusChanger {
         public void setKeys(Object[] keys) {
             this.keys = keys;
         }
-        
+
+        @Override
+        public String toString() {
+            return "SatatusData [keys=" + Arrays.toString(keys) + ", updateTime=" + updateTime + "]";
+        }
+
         
     }
 

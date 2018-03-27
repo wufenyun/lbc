@@ -37,19 +37,17 @@ public abstract class AbstractRefreshMonitor implements StatusMonitor {
     
     @Override
     public void startMonitoring() {
-        logger.info("缓存监控器开始监控任务");
+        logger.info("The cache monitor begins to monitor the task");
         doMonitor();
     }
     
     @Override
     public void notifyRefresh(Object[] keys) {
-        logger.info("开始刷新缓存，key:{}",keys);
         refreshExecutor.refresh(keys);
     }
     
     @Override
     public void notifyRefresh(Object key) {
-        logger.info("开始刷新缓存，key:{}",key);
         refreshExecutor.refresh(key);
     }
     
@@ -92,7 +90,13 @@ public abstract class AbstractRefreshMonitor implements StatusMonitor {
             if(null == key) {
                 return;
             }
+            
             Cache cache = context.getGloableSingleCache();
+            if(!cache.getAllKeyMap().containsKey(key)) {
+                logger.warn("The key-{} not exist,and will not to refresh this key's data",key);
+                return;
+            }
+            
             CacheExchanger<?, ?> exchanger = cache.getAllKeyMap().get(key);
             executor.submit(new RefreshTask(cache, key, exchanger));
         }

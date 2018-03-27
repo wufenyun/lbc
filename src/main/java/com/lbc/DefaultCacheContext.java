@@ -30,7 +30,11 @@ import com.lbc.refresh.polling.Polling;
 import com.lbc.refresh.polling.PolllingRefreshMonitor;
 
 /**
- * Description: 
+ * DefaultCacheContext,默认缓存上下文实现,lbc核心类之一
+ * 1. 实现缓存预加载
+ * 2. 负责缓存监控器管理
+ * 3. 初始化Cache对象,解析相关配置信息
+ * 
  * Date: 2018年3月5日 上午10:49:57
  * 
  * @author wufenyun
@@ -77,20 +81,28 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
         }
     }
     
+    /** 
+     * 轮询模式缓存监控器初始化
+     */
     private void initPollMonitor() {
         this.monitor = new PolllingRefreshMonitor(this);
         StatusAcquirer sAcquirer = null;
         try {
             sAcquirer = applicationContext.getBean(StatusAcquirer.class);
         } catch (NoSuchBeanDefinitionException e) {
-            logger.warn("用户未创建缓存状态获取器(StatusAcquirer)，缓存将不会刷新，请注意！！！！！！！！！");
+            logger.warn(
+                    "The caching state collector(StatusAcquirer) is not created by the user, and the cache will not be refreshed.Please note that!!!!");
             return;
         }
+        
         Polling pmonitor = (Polling)monitor;
         pmonitor.setStatusAcquirer(sAcquirer);
         monitor.startMonitoring();
     }
     
+    /** 
+     * 事件驱动模式(zk实现)缓存监控器初始化
+     */
     private void initZKMonitor() {
         this.monitor = new ZkCacheMonitor(this);
         monitor.startMonitoring();
@@ -99,35 +111,43 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor, Bea
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(LocalCache.class);
-        logger.debug("向容器中注册LocalCache BeanDefinition");
+        logger.debug("regist LocalCache BeanDefinition");
         registry.registerBeanDefinition("localCache", beanDefinition);
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof CacheExchanger) {
-            logger.info("......................." + bean.getClass()+".......................");
             CacheExchanger<?,?> cacheExchanger = (CacheExchanger<?,?>) bean;
             registLoaders(cacheExchanger);
-            initialize(cacheExchanger);
+            prelaoding(cacheExchanger);
         }
         return bean;
     }
 
+    /** 
+     * 注册缓存加载器信息
+     * @param cacheExchanger
+     */
     private void registLoaders(CacheExchanger<?,?> cacheExchanger) {
-        logger.info("注册需要初始加载的缓存加载器：" + cacheExchanger.getClass());
+        logger.info("regist caching loader that needs to be initially loaded：{}",cacheExchanger.getClass());
         cache.regist(cacheExchanger.prelaodingKey(), cacheExchanger);
         cache.registExchangerMapping(cacheExchanger.getClass(), cacheExchanger);
     }
 
-    public <K,V> void initialize(CacheExchanger<K,V> cacheExchanger) {
-        logger.info("start to initialization cache");
+    /** 
+     * 预加载缓存数据
+     * @param cacheExchanger
+     */
+    public <K,V> void prelaoding(CacheExchanger<K,V> cacheExchanger) {
         List<V> initiaData;
         try {
             initiaData = cacheExchanger.prelaoding();
             cache.put(cacheExchanger.prelaodingKey(), initiaData,cacheExchanger);
+            logger.info("CacheExchanger preloading '{}' cached data record:{}",cacheExchanger.prelaodingKey(),initiaData.size());
+            logger.debug("CacheExchanger preloading '{}' cached data :{}",cacheExchanger.prelaodingKey(),initiaData);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("preloading data error",e);
         }
     }
     

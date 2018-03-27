@@ -36,9 +36,11 @@ public class RefreshTask<K,V> implements Runnable {
     public void run() {
         List<V> data;
         try {
+            logger.info("start to refresh cache data，key:{}",key);
             data = exchanger.load(key);
-            cache.replace(key,data);        
-            logger.info("finished refresh the {}'s data:{}",key,data);
+            cache.replace(key,data);
+            logger.info("finished refresh the {}'s data,record count {}",key,data.size());
+            logger.debug("finished refresh the {}'s data,data: {}",key,data);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -16,10 +16,21 @@ public interface StatusMonitor {
      */
     void startMonitoring();
     
+    /** 
+     * 通知刷新缓存任务刷新缓存,支持批量
+     * @param keys
+     */
     void notifyRefresh(Object[] keys);
     
+    /** 
+     * 通知刷新缓存任务刷新缓存
+     * @param key
+     */
     void notifyRefresh(Object key);
     
+    /** 
+     * 关闭监控器
+     */
     void close();
     
     /**

@@ -15,7 +15,7 @@ import com.lbc.wrap.SimpleQueryingCollection;
 
 
 /**
- * Description:  
+ * see Cache
  * Date: 2018年3月2日 下午2:38:28
  * @author wufenyun 
  */
@@ -23,14 +23,13 @@ public class LocalCache implements Cache {
     
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
     
+    private LruSupport lruLinkedSupport;
+    private boolean isLruCache;
+    private CacheConfiguration config;
     private Map<Object, QueryingCollection<?>> storage = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheExchanger<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheExchanger<?, ?>> exchangerMapping = new ConcurrentHashMap<>();
-    private LruSupport lruLinkedSupport;
-    private boolean isLruCache;
-    
-    private CacheConfiguration config;
     
     /** 
      * 初始化
@@ -44,10 +43,20 @@ public class LocalCache implements Cache {
         }
     }
     
+    /** 
+     * 注册缓存加载器信息
+     * @param key
+     * @param exchanger
+     */
     public void regist(Object key, CacheExchanger<?,?> exchanger) {
         initialedKeyMap.put(key, exchanger);
     }
     
+    /** 
+     * 注册缓存加载器信息
+     * @param clazz
+     * @param exchanger
+     */
     public void registExchangerMapping(Class<?> clazz, CacheExchanger<?, ?> exchanger) {
         exchangerMapping.put(clazz, exchanger);
     }
