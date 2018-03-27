@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.lbc.CacheContext;
 import com.lbc.refresh.AbstractRefreshMonitor;
-import com.lbc.refresh.StatusAcquirer;
 
 /**
  * Description:  

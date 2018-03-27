@@ -4,8 +4,6 @@
  */
 package com.lbc.refresh.polling;
 
-import com.lbc.refresh.StatusAcquirer;
-
 /**
  * 轮询模式监控器
  * Date: 2018年3月9日 下午5:16:50

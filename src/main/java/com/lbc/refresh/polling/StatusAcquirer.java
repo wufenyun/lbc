@@ -2,7 +2,7 @@
  * Package: com.lbc
  * Description: 
  */
-package com.lbc.refresh;
+package com.lbc.refresh.polling;
 
 /**
  * 缓存状态获取器

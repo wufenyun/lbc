@@ -5,7 +5,8 @@
 package com.lbc.config;
 
 /**
- * Description:  
+ * lbc配置类，负责管理lbc所有的配置信息
+ * 
  * Date: 2018年3月5日 上午10:49:13
  * @author wufenyun 
  */
@@ -23,13 +24,13 @@ public class CacheConfiguration {
      * 定时刷新缓存任务线程数，默认单线程
      */
     private int refreshThreads = Constant.DEFAULT_REFRESH_THREADS;
-    
-    
     /**
      * 缓存最大阈值，按key的多少计算，默认-1(即不限制缓存数量)，用户可以自己设定
      */
-    private int cacheSizeThreshold = Constant.DEFAULT_CACHESIZE_THRESHOLD;
-    
+    private int cacheSizeThreshold = Constant.NO_CACHESIZE_LIMIT;
+    /**
+     * 缓存数据一致性监控模式
+     */
     private MonitorModel monitorModel = MonitorModel.POLLING;
     /**
      * zookeeper地址
@@ -40,6 +41,10 @@ public class CacheConfiguration {
      */
     private String yourZkDataNode = Constant.DEFAULT_ZKDATA_NODENAME;
     
+    
+    /**
+     * 缓存数据一致性监控模式,目前支持轮询模式和zk实现的事件驱动模式
+     */
     public static enum MonitorModel {
         /**
          * 采用轮询的模式来监控缓存是否需要刷新
@@ -55,7 +60,7 @@ public class CacheConfiguration {
         public final static int DEFAULT_INITIAL_DELAY = 0;
         public final static int DEFAULT_INTERVAL_MILLS = 1000;
         public final static int DEFAULT_REFRESH_THREADS = 1;
-        public final static int DEFAULT_CACHESIZE_THRESHOLD = -1;
+        public final static int NO_CACHESIZE_LIMIT = -1;
         public final static String ROOTPATH = "/localBatchCache";
         public final static String DEFAULT_ZKDATA_NODENAME = "/defaultRefresherDataNode";
     }
