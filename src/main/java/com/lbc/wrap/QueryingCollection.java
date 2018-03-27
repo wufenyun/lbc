@@ -1,7 +1,7 @@
 package com.lbc.wrap;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 import com.lbc.query.Queriable;
 
@@ -21,14 +21,21 @@ public interface QueryingCollection<V> extends Queriable<V> {
 	void wrap(List<V> v);
 	
 	/** 
-	 * 以Map集合
+	 * 以指定属性为key,key值要求唯一,返回Map
+	 * @param keyFieldName 作为key的属性名，一定要是值唯一的属性
 	 * @return
 	 */
-	<K> ConcurrentMap<K, V> asMap();
+	<K> Map<K, V> asMap(String keyFieldName);
 	
 	/** 
 	 * 返回原始数据集
 	 * @return
 	 */
-	List<V> data();
+	List<V> all();
+	
+	/** 
+	 * 集合记录总数
+	 * @return
+	 */
+	long size();
 }

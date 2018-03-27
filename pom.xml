@@ -9,6 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>com.github.wufenyun:lbc</name>
+	<description>lbc,focus on local batch cache</description>
 	<url>https://github.com/wufenyun/lbc</url>
 
 	<properties>
@@ -16,7 +17,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 		<spring.version>4.3.14.RELEASE</spring.version>
-		<!-- <gpg.executable>gpg2</gpg.executable> -->
 	</properties>
 
 	<developers>
@@ -72,7 +72,7 @@
 			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -91,17 +91,48 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<!-- Source -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
+				<version>2.10.3</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+			<!-- GPG -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -115,66 +146,4 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<!-- Source -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Javadoc -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
-						<executions>
-							<execution>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<additionalparam>-Xdoclint:none</additionalparam>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- GPG -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-				</snapshotRepository>
-				<repository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-	</profiles>
 </project>

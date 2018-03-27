@@ -20,7 +20,7 @@ public class ZkStatusChangerTest {
 
     @Test
     public void change() {
-        statusChanger.updateStatus("category");
+        //statusChanger.updateStatus("category");
     }
     
 }

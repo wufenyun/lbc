@@ -118,9 +118,8 @@ public class BeanUtil {
 	}
 	
 	/** 
-	 * Description:  根据PropertyDescriptor返回具有取消默认 Java 语言访问控制检查能力的方法
-	 * @param pd PropertyDescriptor
-	 * @return 返回具有取消默认 Java 语言访问控制检查能力的方法
+	 * setAccessible
+	 * @param method 
 	 */
 	public static void setAccessibleMethod(Method method) {
 		AssertUtil.notNull(method);

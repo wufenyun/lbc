@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.lbc.query.Criteria;
@@ -22,10 +23,10 @@ import com.lbc.wrap.SimpleQueryingCollection;
  */
 public class SimpleQueryingCollectionTest {
 
+    private SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
+    
     @Test
     public void queryByCritreia() {
-        SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
-        co.wrap(getList());
         Query query = Query.query(Criteria.where("categoryId").is(1)
                 .and("level").is(1)
                 .and("status").in(Arrays.asList(0,1)));
@@ -35,9 +36,12 @@ public class SimpleQueryingCollectionTest {
     }
     
     @Test
+    public void asMap() {
+        System.out.println(co.asMap("categoryId"));
+    }
+    
+    @Test
     public void queryByExample() {
-        SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
-        co.wrap(getList());
         Category category = new Category();
         category.setStatus(1);
         Query query = Query.query(Example.of(category));
@@ -46,7 +50,9 @@ public class SimpleQueryingCollectionTest {
         System.out.println(result.size());
     }
     
-    public List<Category> getList() {
+
+    @Before
+    public void wrap() {
         Category c1 = new Category();
         c1.setCategoryId(1);
         c1.setLevel(1);
@@ -60,8 +66,7 @@ public class SimpleQueryingCollectionTest {
         List<Category> list = new ArrayList<>();
         list.add(c1);
         list.add(c2);
-        return list;
+        co.wrap(list);
     }
-    
     
 }
