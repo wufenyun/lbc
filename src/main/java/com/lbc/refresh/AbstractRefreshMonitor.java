@@ -4,10 +4,7 @@
  */
 package com.lbc.refresh;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +72,7 @@ public abstract class AbstractRefreshMonitor implements StatusMonitor {
         public RefreshExecutor() {
             CacheConfiguration configuration = context.getConfiguration();
             executor = new ThreadPoolExecutor(configuration.getRefreshThreads(),
-                    configuration.getRefreshThreads(), 1000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(100),new ThreadFactory() {
+                    configuration.getRefreshThreads(), 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(50),new ThreadFactory() {
                         
                         @Override
                         public Thread newThread(Runnable r) {
