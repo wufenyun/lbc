@@ -8,16 +8,17 @@
 
 1.3 本地内存查询
 
-1.4 支持LRU cache
+1.4 支持LRU cache   
 
 ### 2.使用说明
 
+```java  
   <dependency>
     <groupId>com.github.wufenyun</groupId>
     <artifactId>lbc</artifactId>
     <version>1.1.1-RELEASE</version>
-  </dependency>
-
+  </dependency>  
+```
 
 
 
