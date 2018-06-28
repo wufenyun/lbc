@@ -1,5 +1,7 @@
 package com.lbc.test;
 
+import com.lbc.wrap.tree.Treeable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +10,7 @@ import java.util.Map;
  * Date: 2018年3月2日 下午2:38:28
  * @author wufenyun 
  */
-public class Category {
+public class Category implements Treeable {
 
     private String id;
 
@@ -149,4 +151,14 @@ public class Category {
 	public void setCategoryNameMap(Map<String,String> categoryNameMap) {
 		this.categoryNameMap = categoryNameMap;
 	}
+
+    @Override
+    public Object returnUniqueId() {
+        return categoryId;
+    }
+
+    @Override
+    public Object returnUniqueParentId() {
+        return parentId;
+    }
 }

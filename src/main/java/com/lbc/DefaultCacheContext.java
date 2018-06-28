@@ -7,19 +7,17 @@ package com.lbc;
 
 import com.lbc.config.CacheConfiguration;
 import com.lbc.exchanger.CacheExchanger;
-import com.lbc.refresh.StatusMonitor;
-import com.lbc.refresh.event.ZkCacheMonitor;
-import com.lbc.refresh.polling.Polling;
-import com.lbc.refresh.polling.PolllingRefreshMonitor;
-import com.lbc.refresh.polling.StatusAcquirer;
+import com.lbc.consistency.ConsistencyMonitor;
+import com.lbc.consistency.event.ZkCacheMonitor;
+import com.lbc.consistency.polling.Polling;
+import com.lbc.consistency.polling.PolllingRefreshMonitor;
+import com.lbc.consistency.polling.StatusAcquirer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.beans.factory.config.*;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -47,7 +45,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     private ApplicationContext applicationContext;
     private CacheConfiguration configuration;
     private LocalCache cache = new LocalCache();
-    private StatusMonitor monitor;
+    private ConsistencyMonitor monitor;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -178,7 +176,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     public void destroy() throws Exception {
         //关闭监控器
         if (null != monitor) {
-            monitor.close();
+            monitor.stopMonitor();
         }
 
         cache = null;

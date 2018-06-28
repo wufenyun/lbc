@@ -6,7 +6,7 @@ package com.lbc.test;
 
 import org.junit.Test;
 
-import com.lbc.refresh.event.support.ZkCacheStatusChanger;
+import com.lbc.consistency.event.support.ZkCacheStatusChanger;
 
 /**
  * Description:  

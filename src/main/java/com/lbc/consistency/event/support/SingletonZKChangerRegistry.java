@@ -1,8 +1,7 @@
-package com.lbc.refresh.event.support;
+package com.lbc.consistency.event.support;
 
 import com.lbc.support.AssertUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
