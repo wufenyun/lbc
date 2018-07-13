@@ -5,9 +5,6 @@ package com.lbc.config;
  * @author: wufenyun
  * @date: 2018-07-12 19
  **/
-/**
- * 缓存淘汰相关配置
- */
 public final class EliminationConfig {
 
     /**

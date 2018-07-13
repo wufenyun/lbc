@@ -10,13 +10,13 @@ package com.lbc.config;
  * Date: 2018年3月5日 上午10:49:13
  * @author wufenyun 
  */
-public class Configuration {
+public class LbcConfiguration {
 
     private MonitorConfig monitorConfig;
     private PreventPenetrationConfig preventPenetrationConfig;
     private EliminationConfig eliminationConfig;
 
-    private Configuration(Builder builder) {
+    private LbcConfiguration(Builder builder) {
         this.monitorConfig = builder.monitorConfig;
         this.eliminationConfig = builder.eliminationConfig;
         this.preventPenetrationConfig = builder.preventPenetrationConfig;
@@ -69,6 +69,17 @@ public class Configuration {
         }
 
         public Builder pollingMonitorConfig(int refreshThreads,long initialDelay,long intervalMills) {
+            if(refreshThreads < 1) {
+                refreshThreads = MonitorConfig.DEFAULT_REFRESH_THREADS;
+            }
+
+            if(initialDelay < 0) {
+                initialDelay = MonitorConfig.DEFAULT_INITIAL_DELAY;
+            }
+
+            if (intervalMills < 1) {
+                intervalMills = MonitorConfig.DEFAULT_INTERVAL_MILLS;
+            }
             this.monitorConfig = new MonitorConfig(refreshThreads,initialDelay,intervalMills);
             return this;
         }
@@ -79,6 +90,13 @@ public class Configuration {
         }
 
         public Builder bloomPreventPenetrationConfig(int clearIntervalSeconds, int expectedInsertions) {
+            if(clearIntervalSeconds < 0) {
+                clearIntervalSeconds = PreventPenetrationConfig.DEFAULT_CLEAR_BLOOM_INTERVAL_SECONDS;
+            }
+
+            if (expectedInsertions < 0) {
+                expectedInsertions = PreventPenetrationConfig.DEFAULT_EXPECTED_INSERTIONS;
+            }
             this.preventPenetrationConfig = new PreventPenetrationConfig(clearIntervalSeconds,expectedInsertions);
             return this;
         }
@@ -95,8 +113,8 @@ public class Configuration {
             return this;
         }
 
-        public Configuration build() {
-            return new Configuration(this);
+        public LbcConfiguration build() {
+            return new LbcConfiguration(this);
         }
     }
 

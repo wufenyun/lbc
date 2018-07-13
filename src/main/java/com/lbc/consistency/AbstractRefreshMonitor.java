@@ -6,7 +6,6 @@ package com.lbc.consistency;
 
 import com.lbc.Cache;
 import com.lbc.CacheLoader;
-import com.lbc.config.Configuration;
 import com.lbc.config.MonitorConfig;
 import com.lbc.context.CacheContext;
 import org.slf4j.Logger;

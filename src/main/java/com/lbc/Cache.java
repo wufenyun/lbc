@@ -41,6 +41,7 @@ public interface Cache {
 
     /**
      * 根据key获取缓存集合，返回的集合对象提供查询功能；
+     * 如果获取到的数据为空则会返回空的QueryingCollection对象;
      * 注意：如果缓存中不存在此key的数据，则调用相应的CacheLoader加载到缓存中然后返回
      * @param key 键值
      * @param clazz 缓存加载器Class类型
@@ -50,6 +51,7 @@ public interface Cache {
 
     /**
      * 根据key获取缓存集合，返回的集合对象提供查询功能；
+     * 如果获取到的数据为空则会返回空的QueryingCollection对象;
      * 注意：如果缓存中不存在此key的数据，则返回空
      * @param key 键值
      * @return 可查询的缓存集合

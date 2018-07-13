@@ -1,6 +1,6 @@
 package com.lbc.config.spring;
 
-import com.lbc.config.Configuration;
+import com.lbc.config.LbcConfiguration;
 import com.lbc.config.EliminationConfig;
 import com.lbc.config.MonitorConfig;
 import com.lbc.config.PreventPenetrationConfig;
@@ -40,7 +40,7 @@ public class LbcRegistar implements ImportBeanDefinitionRegistrar {
         int clearIntervalSeconds = (int) attributes.get("clearIntervalSeconds");
         int expectedInsertions = (int) attributes.get("expectedInsertions");
 
-        Configuration.Builder configBuilder = new Configuration.Builder();
+        LbcConfiguration.Builder configBuilder = new LbcConfiguration.Builder();
         if(MonitorConfig.MonitorModel.EVENT_ZK.equals(monitorModel)) {
             configBuilder.zkMonitorConfig(refreshThreads,zkConnection,yourZkDataNode);
         } else if(MonitorConfig.MonitorModel.POLLING.equals(monitorModel)) {

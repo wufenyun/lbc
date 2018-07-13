@@ -1,6 +1,5 @@
 package com.lbc.config.spring;
 
-import com.lbc.config.Configuration;
 import com.lbc.config.EliminationConfig;
 import com.lbc.config.MonitorConfig;
 import com.lbc.config.PreventPenetrationConfig;
@@ -29,7 +28,7 @@ public @interface EnableLbc {
     /**
      * 定时刷新缓存任务线程数
      */
-    int refreshThreads() default MonitorConfig.DEFAULT_REFRESH_THREADS;
+    int refreshThreads() default -1;
 
     /**
      * zookeeper地址
@@ -39,17 +38,17 @@ public @interface EnableLbc {
     /**
      * 应用专属zk数据节点名，用以EVNET_ZK监控模式下记录需要刷新的数据,建议用户自己定义来避免不同应用冲突
      */
-    String yourZkDataNode() default MonitorConfig.DEFAULT_ZKDATA_NODENAME;
+    String yourZkDataNode() default "";
 
     /**
      * 定时刷新缓存任务初次执行延迟时间
      */
-    long initialDelay() default MonitorConfig.DEFAULT_INITIAL_DELAY;
+    long initialDelay() default -1;
 
     /**
      * 定时刷新缓存任务执行间隔时间
      */
-    long intervalMills() default MonitorConfig.DEFAULT_INTERVAL_MILLS;
+    long intervalMills() default -1;
 
 
     /*     ******************************  缓存淘汰策略配置项  ******************************    */

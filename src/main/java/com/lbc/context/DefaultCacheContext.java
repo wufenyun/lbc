@@ -7,7 +7,7 @@ package com.lbc.context;
 
 import com.lbc.Cache;
 import com.lbc.LocalCache;
-import com.lbc.config.Configuration;
+import com.lbc.config.LbcConfiguration;
 import com.lbc.context.event.CloseEvent;
 import com.lbc.context.event.EventMulticaster;
 import com.lbc.context.event.SimpleEventMulticaster;
@@ -55,15 +55,15 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
 
     private ApplicationContext applicationContext;
-    private Configuration configuration;
+    private LbcConfiguration lbcConfiguration;
     private LocalCache cache;
     private ConsistencyMonitor monitor;
     private EventMulticaster eventMulticaster = new SimpleEventMulticaster();
     private StatusComponent statusComponent = new StatusComponent();
 
     @Override
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
+    public void setConfiguration(LbcConfiguration lbcConfiguration) {
+        this.lbcConfiguration = lbcConfiguration;
     }
 
     /*   *************************   生命周期之初始化缓存对象   *************************   */
@@ -124,7 +124,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
 
     @Override
     public void onCacheBuilt() {
-        switch (configuration.getMonitorConfig().getMonitorModel()) {
+        switch (lbcConfiguration.getMonitorConfig().getMonitorModel()) {
             case EVENT_ZK:
                 initZKMonitor();
                 break;
@@ -187,8 +187,8 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     }
 
     @Override
-    public Configuration getConfiguration() {
-        return configuration;
+    public LbcConfiguration getConfiguration() {
+        return lbcConfiguration;
     }
 
     @Override

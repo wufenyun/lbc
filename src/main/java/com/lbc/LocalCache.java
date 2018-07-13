@@ -1,15 +1,15 @@
 package com.lbc;
 
-import com.lbc.config.Configuration;
 import com.lbc.config.EliminationConfig;
+import com.lbc.config.LbcConfiguration;
 import com.lbc.config.PreventPenetrationConfig;
 import com.lbc.context.CacheContext;
-import com.lbc.context.DefaultCacheContext;
 import com.lbc.context.event.Event;
 import com.lbc.context.event.EventFactory;
 import com.lbc.context.event.EventMulticaster;
+import com.lbc.maintenance.ExpiredBloomFilter;
 import com.lbc.support.AssertUtil;
-import com.lbc.support.ExpiredBloomFilter;
+import com.lbc.support.CommonUtil;
 import com.lbc.wrap.QueryingCollection;
 import com.lbc.wrap.SimpleQueryingCollection;
 import org.slf4j.Logger;
@@ -27,14 +27,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalCache implements Cache {
     
-    private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalCache.class);
     
     private Map<Object, QueryingCollection<?>> storage = new ConcurrentHashMap<>();
     private Map<Object, CacheLoader<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheLoader<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheLoader<?, ?>> cacheLoaderMapping = new ConcurrentHashMap<>();
 
-    private Configuration config;
+    private LbcConfiguration config;
     private CacheContext context;
     private LruSupport lruLinkedSupport;
     private boolean isLruCache;
@@ -122,22 +122,15 @@ public class LocalCache implements Cache {
     @Override
     public <K, V> QueryingCollection<V> get(K key) {
         AssertUtil.notNull(key, "key不能为空");
-        QueryingCollection<V> collection = (QueryingCollection<V>) storage.get(key);
-        
-        //如果为空，直接返回
-        if(null != collection) {
-            lruIfNecessary(key);
-        }
-
-        return collection;
+        return doLocalGet(key);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <K, V> QueryingCollection<V> get(K key,Class<? extends CacheLoader<K, V>> clazz) {
         AssertUtil.notNull(key, "key不能为空");
-        
-        QueryingCollection<?> value = storage.get(key);
+
+        QueryingCollection<?> value = doLocalGet(key);
         if(null != value) {
             return (QueryingCollection<V>) value;
         }
@@ -154,11 +147,11 @@ public class LocalCache implements Cache {
                 try {
                     data = cacheLoader.load(key);
                 } catch (Exception e) {
-                    logger.error("加载数据到缓存失败，key:{}",key);
+                    logger.error("加载数据到缓存失败，key:{}",key,e);
                     return null;
                 }
                 //如果为空，并且开启了布隆过滤器
-                if(null==data && isBloomPolicy()) {
+                if(CommonUtil.isEmpty(data) && isBloomPolicy()) {
                     expiredBloomFilter.add(key.toString());
                     return null;
                 }
@@ -166,8 +159,26 @@ public class LocalCache implements Cache {
             }
         }
         
-        lruIfNecessary(key);
-        return (QueryingCollection<V>) storage.get(key);
+        return doLocalGet(key);
+    }
+
+    /**
+     * 执行本地缓存查询，即使本地缓存中未查询到也不会从外部资源加载数据；
+     * 如果开启了缓存淘汰策略则进行相关操作；
+     *
+     * @param key
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    private <K, V> QueryingCollection<V> doLocalGet(K key) {
+        QueryingCollection<V> collection = (QueryingCollection<V>) storage.get(key);
+
+        if(null != collection) {
+            lruIfNecessary(key);
+        }
+
+        return collection;
     }
 
     /**

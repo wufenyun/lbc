@@ -1,17 +1,18 @@
 package com.lbc.config;
 
 /**
- * @description: 防缓存穿透配置
+ * @description: 防缓存穿透相关配置
  * @author: wufenyun
  * @date: 2018-07-12 20
  **/
-/**
- * 防缓存穿透相关配置
- */
 public final class PreventPenetrationConfig {
 
     public final static int DEFAULT_CLEAR_BLOOM_INTERVAL_SECONDS = 60;
+    public final static int DEFAULT_EXPECTED_INSERTIONS = 1000;
 
+    /**
+     * 防穿透策略
+     */
     private PreventPenetrationPolicy policy;
     /**
      * 清除布隆过滤器信息的时间间隔

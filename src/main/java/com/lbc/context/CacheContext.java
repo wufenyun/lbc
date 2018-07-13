@@ -5,7 +5,7 @@
 package com.lbc.context;
 
 import com.lbc.Cache;
-import com.lbc.config.Configuration;
+import com.lbc.config.LbcConfiguration;
 import com.lbc.context.event.EventMulticaster;
 import com.lbc.CacheLoader;
 
@@ -24,9 +24,9 @@ public interface CacheContext {
     /**
      * 设置配置文件
      *
-     * @param configuration 缓存配置信息
+     * @param lbcConfiguration 缓存配置信息
      */
-    void setConfiguration(Configuration configuration);
+    void setConfiguration(LbcConfiguration lbcConfiguration);
 
     /**
      * 初始化cache对象，包括设置参数等操作
@@ -64,7 +64,7 @@ public interface CacheContext {
      * 获取配置管理对象
      * @return 缓存配置信息
      */
-    Configuration getConfiguration();
+    LbcConfiguration getConfiguration();
 
     /**
      * 获取事件消息多播器

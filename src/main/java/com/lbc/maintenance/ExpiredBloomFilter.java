@@ -1,4 +1,4 @@
-package com.lbc.support;
+package com.lbc.maintenance;
 
 import java.io.Serializable;
 import java.util.BitSet;
@@ -109,7 +109,7 @@ public class ExpiredBloomFilter implements Serializable {
 
     private boolean timeout() {
         if(isOpenIntervalClear() && (System.currentTimeMillis() >= nextClearTime)) {
-            nextClearTime = System.currentTimeMillis() + clearIntervalSeconds;
+            nextClearTime = System.currentTimeMillis() + clearIntervalSeconds*1000;
             return true;
         }
         return false;

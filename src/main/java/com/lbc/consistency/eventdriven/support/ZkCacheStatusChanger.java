@@ -53,7 +53,16 @@ public class ZkCacheStatusChanger implements CacheStatusChanger {
         SatatusData satatusData = new SatatusData(keys);
         client.writeData(refresherDataNodePath, satatusData);
     }
-    
+
+    /**
+     * 关闭zk client
+     */
+    public void close() {
+        if(null != client) {
+            client.close();
+        }
+    }
+
     public static class SatatusData implements Serializable {
         
         private static final long serialVersionUID = 7538970849137378719L;

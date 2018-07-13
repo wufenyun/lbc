@@ -107,7 +107,6 @@ public class AssertUtil {
 	/** 
      * Description:  断言字符串不为空，且字符串不能为空格。(null,"","  ")将抛出异常
      * @param str 源字符串
-     * @param message 异常信息
      */
     public static void notBlank(String str) {
         notBlank(str,"Assert failed:this argument is null or blank");
