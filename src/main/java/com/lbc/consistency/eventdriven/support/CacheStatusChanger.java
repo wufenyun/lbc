@@ -2,7 +2,7 @@
  * Package: com.lbc.refresh.event.support
  * Description: 
  */
-package com.lbc.consistency.event.support;
+package com.lbc.consistency.eventdriven.support;
 
 /**
  * Description:  

@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbc.CacheContext;
+import com.lbc.context.CacheContext;
 import com.lbc.consistency.AbstractRefreshMonitor;
 
 /**
@@ -43,7 +43,7 @@ public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Po
             @Override
             public void run() {
                 while(true) {
-                    Map<?, ?> keyLoaders = context.getGloableSingleCache().getAllKeyMap();
+                    Map<?, ?> keyLoaders = context.getGlobalSingleCache().getAllKeyMap();
                     keyLoaders.forEach((k,v)->{
                         logger.debug("判断key:{}是否需要刷新",k);
                         if(statusAcquirer.needRefresh(k)) {
@@ -51,7 +51,7 @@ public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Po
                         }
                     });
                     try {
-                        Thread.sleep(context.getConfiguration().getIntervalMills());
+                        Thread.sleep(getMonitorConfig().getIntervalMills());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

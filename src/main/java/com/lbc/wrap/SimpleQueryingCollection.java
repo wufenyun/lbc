@@ -16,7 +16,7 @@ import com.lbc.wrap.tree.TreeNode;
 import com.lbc.wrap.tree.Treeable;
 
 /**
- * See QueryingCollection
+ * @see  QueryingCollection
  * 
  * @author wufenyun
  * @param <V>
@@ -25,15 +25,19 @@ import com.lbc.wrap.tree.Treeable;
 public class SimpleQueryingCollection<V> implements QueryingCollection<V> {
 
 	private List<V> data;
-	
-	@Override
-	public long size() {
-		return data.size();
-	}
+
+	public SimpleQueryingCollection() {
+
+    }
+
+	public SimpleQueryingCollection(List<V> data) {
+        this.data = data;
+    }
 
 	@Override
-	public void wrap(List<V> v) {
+	public QueryingCollection<V> wrap(List<V> v) {
 		this.data = v;
+		return this;
 	}
 
     @Override
@@ -51,6 +55,16 @@ public class SimpleQueryingCollection<V> implements QueryingCollection<V> {
         return (Map<K, V>) data.stream().collect(Collectors.toConcurrentMap(x -> {
             return PropertyUtil.getFieldValue(x, keyFieldName);
         }, y -> y));
+    }
+
+    @Override
+    public List<V> all() {
+        return data;
+    }
+
+    @Override
+    public long size() {
+        return data.size();
     }
 
     @Override
@@ -115,11 +129,6 @@ public class SimpleQueryingCollection<V> implements QueryingCollection<V> {
         }
 
 
-    }
-
-    @Override
-    public List<V> all() {
-        return data;
     }
 
 }

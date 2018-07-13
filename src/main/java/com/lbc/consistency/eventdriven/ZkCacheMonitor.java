@@ -2,16 +2,15 @@
  * Package: com.lbc.refresh.event
  * Description: 
  */
-package com.lbc.consistency.event;
+package com.lbc.consistency.eventdriven;
 
+import com.lbc.config.MonitorConfig;
 import com.lbc.consistency.AbstractRefreshMonitor;
-import com.lbc.consistency.event.support.ZkCacheStatusChanger;
+import com.lbc.consistency.eventdriven.support.LbcZkSerializer;
+import com.lbc.consistency.eventdriven.support.ZkCacheStatusChanger;
+import com.lbc.context.CacheContext;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
-
-import com.lbc.CacheContext;
-import com.lbc.config.CacheConfiguration.Constant;
-import com.lbc.consistency.event.support.LbcZkSerializer;
 
 /**
  * Description:  
@@ -25,11 +24,11 @@ public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataLis
     public ZkCacheMonitor(CacheContext context) {
         super(context);
         
-        client = new ZkClient(context.getConfiguration().getZkConnection());
+        client = new ZkClient(getMonitorConfig().getZkConnection());
         client.setZkSerializer(new LbcZkSerializer());
        
-        if(!client.exists(Constant.ROOTPATH)) {
-            client.createPersistent(Constant.ROOTPATH);
+        if(!client.exists(MonitorConfig.ROOTPATH)) {
+            client.createPersistent(MonitorConfig.ROOTPATH);
         }
     }
     
@@ -44,13 +43,13 @@ public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataLis
     }
     
     private String getYourDataNodePath() {
-        String subNode = context.getConfiguration().getYourZkDataNode();
+        String subNode = getMonitorConfig().getYourZkDataNode();
         if(!subNode.startsWith("/")) {
             subNode = "/" + subNode;
         }
-        return Constant.ROOTPATH + subNode;
+        return MonitorConfig.ROOTPATH + subNode;
     }
-    
+
     @Override
     protected void doClose() {
         if(null != client) {

@@ -1,4 +1,4 @@
-package com.lbc.consistency.event.support;
+package com.lbc.consistency.eventdriven.support;
 
 import com.lbc.support.AssertUtil;
 

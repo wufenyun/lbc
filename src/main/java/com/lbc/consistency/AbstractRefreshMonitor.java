@@ -4,15 +4,18 @@
  */
 package com.lbc.consistency;
 
-import java.util.concurrent.*;
-
+import com.lbc.Cache;
+import com.lbc.CacheLoader;
+import com.lbc.config.Configuration;
+import com.lbc.config.MonitorConfig;
+import com.lbc.context.CacheContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbc.Cache;
-import com.lbc.CacheContext;
-import com.lbc.config.CacheConfiguration;
-import com.lbc.exchanger.CacheExchanger;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description:  
@@ -30,7 +33,6 @@ public abstract class AbstractRefreshMonitor implements ConsistencyMonitor {
         this.context = context;
         refreshExecutor = new RefreshExecutor();
     }
-    
     
     @Override
     public void startMonitoring() {
@@ -64,15 +66,18 @@ public abstract class AbstractRefreshMonitor implements ConsistencyMonitor {
      * 关闭监控器，由具体子类实现
      */
     protected abstract void doClose();
-    
+
+    protected MonitorConfig getMonitorConfig() {
+        return context.getConfiguration().getMonitorConfig();
+    }
+
     class RefreshExecutor implements Refresher {
 
         private ThreadPoolExecutor executor;
         
         public RefreshExecutor() {
-            CacheConfiguration configuration = context.getConfiguration();
-            executor = new ThreadPoolExecutor(configuration.getRefreshThreads(),
-                    configuration.getRefreshThreads(), 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(50),new ThreadFactory() {
+            executor = new ThreadPoolExecutor(getMonitorConfig().getRefreshThreads(),
+                    getMonitorConfig().getRefreshThreads(), 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(50),new ThreadFactory() {
                         
                         @Override
                         public Thread newThread(Runnable r) {
@@ -88,14 +93,14 @@ public abstract class AbstractRefreshMonitor implements ConsistencyMonitor {
                 return;
             }
             
-            Cache cache = context.getGloableSingleCache();
+            Cache cache = context.getGlobalSingleCache();
             if(!cache.getAllKeyMap().containsKey(key)) {
                 logger.warn("The key-{} not exist,and will not to refresh this key's data",key);
                 return;
             }
             
-            CacheExchanger<?, ?> exchanger = cache.getAllKeyMap().get(key);
-            executor.submit(new RefreshTask(cache, key, exchanger));
+            CacheLoader<?, ?> cacheLoader = cache.getAllKeyMap().get(key);
+            executor.submit(new RefreshTask(context, key, cacheLoader));
         }
 
         @Override

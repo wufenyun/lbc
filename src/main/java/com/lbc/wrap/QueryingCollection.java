@@ -15,11 +15,13 @@ import com.lbc.wrap.tree.TreeNode;
  */
 public interface QueryingCollection<V> extends Queriable<V> {
 	
-	/** 
+	/**
 	 * 封装集合对象
+	 *
 	 * @param v
+	 * @return
 	 */
-	void wrap(List<V> v);
+	QueryingCollection<V> wrap(List<V> v);
 
 	/**
 	 * 集合记录总数

@@ -4,13 +4,15 @@
  */
 package com.lbc.consistency;
 
-import java.util.List;
-
+import com.lbc.CacheLoader;
+import com.lbc.context.CacheContext;
+import com.lbc.context.event.Event;
+import com.lbc.context.event.EventFactory;
+import com.lbc.wrap.QueryingCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbc.Cache;
-import com.lbc.exchanger.CacheExchanger;
+import java.util.List;
 
 /**
  * Description:  
@@ -21,29 +23,39 @@ public class RefreshTask<K,V> implements Runnable {
     
     private static final Logger logger = LoggerFactory.getLogger(RefreshTask.class);
     
-    private Cache cache;
+    private CacheContext context;
     private K key;
-    private CacheExchanger<K,V> exchanger;
+    private CacheLoader<K,V> cacheLoader;
     
-    public RefreshTask(Cache cache,K key,CacheExchanger<K,V> exchanger) {
-        this.cache = cache;
+    public RefreshTask(CacheContext context, K key, CacheLoader<K,V> cacheLoader) {
+        this.context = context;
         this.key = key;
-        this.exchanger = exchanger;
+        this.cacheLoader = cacheLoader;
     }
-
 
     @Override
     public void run() {
-        List<V> data;
         try {
-            logger.info("start to refresh cache data，key:{}",key);
-            data = exchanger.load(key);
-            cache.replace(key,data);
-            logger.info("finished refresh the {}'s data,record count {}",key,data.size());
+            logger.debug("start to refresh cache data,key:{}",key);
+            if(!context.getGlobalSingleCache().contains(key)) {
+                logger.info("lbc have not load key：{} data，don't refresh",key);
+                return;
+            }
+
+            List<V> data = cacheLoader.load(key);
+            context.getGlobalSingleCache().get(key);
+            context.getGlobalSingleCache().replace(key,data);
+
+            Event event = EventFactory.newRefreshedEvent(key,getExistSize(key),data.size());
+            context.getEventMulticaster().multicast(event);
             logger.debug("finished refresh the {}'s data,data: {}",key,data);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 
+    private long getExistSize(Object key) {
+        QueryingCollection collection = context.getGlobalSingleCache().get(key);
+        return (collection==null?0:collection.size());
+    }
 }

@@ -4,9 +4,8 @@
  */
 package com.lbc.test;
 
+import com.lbc.consistency.eventdriven.support.ZkCacheStatusChanger;
 import org.junit.Test;
-
-import com.lbc.consistency.event.support.ZkCacheStatusChanger;
 
 /**
  * Description:  

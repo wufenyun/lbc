@@ -2,14 +2,13 @@
  * Package: com.lbc.refresh.event.support
  * Description: 
  */
-package com.lbc.consistency.event.support;
+package com.lbc.consistency.eventdriven.support;
+
+import com.lbc.config.MonitorConfig;
+import org.I0Itec.zkclient.ZkClient;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
-import org.I0Itec.zkclient.ZkClient;
-
-import com.lbc.config.CacheConfiguration.Constant;
 
 /**
  * Description:  
@@ -24,7 +23,7 @@ public class ZkCacheStatusChanger implements CacheStatusChanger {
     public ZkCacheStatusChanger(String connection) {
         this.client = new ZkClient(connection);
         client.setZkSerializer(new LbcZkSerializer());
-        refresherDataNodePath = Constant.ROOTPATH + Constant.DEFAULT_ZKDATA_NODENAME;
+        refresherDataNodePath = MonitorConfig.ROOTPATH + MonitorConfig.DEFAULT_ZKDATA_NODENAME;
     }
     
     /**
@@ -40,13 +39,13 @@ public class ZkCacheStatusChanger implements CacheStatusChanger {
     
     private String getYourDataNodePath(String subNode) {
         if(null==subNode || subNode.isEmpty()) {
-            return Constant.ROOTPATH + Constant.DEFAULT_ZKDATA_NODENAME;
+            return MonitorConfig.ROOTPATH + MonitorConfig.DEFAULT_ZKDATA_NODENAME;
         }
         
         if(!subNode.startsWith("/")) {
             subNode = "/" + subNode;
         }
-        return Constant.ROOTPATH + subNode;
+        return MonitorConfig.ROOTPATH + subNode;
     }
     
     @Override

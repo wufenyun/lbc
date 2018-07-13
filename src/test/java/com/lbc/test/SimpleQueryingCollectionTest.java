@@ -27,7 +27,7 @@ public class SimpleQueryingCollectionTest extends TestBase {
     private SimpleQueryingCollection<Category> co = new SimpleQueryingCollection<Category>();
     
     @Test
-    public void queryByCritreia() {
+    public void queryByCriteria() {
         Query query = Query.query(Criteria.where("categoryId").is(1)
                 .and("level").is(1)
                 .and("status").in(Arrays.asList(0,1)));
