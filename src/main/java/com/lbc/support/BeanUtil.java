@@ -8,14 +8,13 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lbc.context.event.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,4 +190,50 @@ public class BeanUtil {
         }
         return nv;
     }
+
+	/**
+	 * 获取对象的泛型类型,此对象的泛型获取是通过父接口获取的，所以此对象实现的是接口而不能是继承父类
+	 *
+	 * @param object
+	 * @return
+	 */
+	public static Type getGenericTypeOnSupperInterface(Object object) {
+		AssertUtil.notNull(object);
+		Type[] interfacesTypes = object.getClass().getGenericInterfaces();
+		return ((ParameterizedType) interfacesTypes[0]).getActualTypeArguments()[0];
+	}
+
+	/**
+	 * 获取类的泛型类型,此对象的泛型获取是通过父接口获取的，所以此对象实现的是接口而不能是继承父类
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public static Type getGenericTypeOnSupperInterface(Class clazz) {
+		AssertUtil.notNull(clazz);
+		Type[] interfacesTypes = clazz.getGenericInterfaces();
+		return ((ParameterizedType) interfacesTypes[0]).getActualTypeArguments()[0];
+	}
+
+	/**
+	 * 获取对象的泛型类型,此对象的泛型获取是通过父类获取的，所以此对象只能是继承类而不能是接口
+	 *
+	 * @param object
+	 * @return
+	 */
+	public static Type getGenericTypeOnSupperClass(Object object) {
+		AssertUtil.notNull(object);
+		return ((ParameterizedType)object.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+
+	/**
+	 * 获取类的泛型类型,此对象的泛型获取是通过父类获取的，所以此对象只能是继承类而不能是接口
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public static Type getGenericTypeOnSupperClass(Class clazz) {
+		AssertUtil.notNull(clazz);
+		return ((ParameterizedType)clazz.getGenericSuperclass()).getActualTypeArguments()[0];
+	}
 }

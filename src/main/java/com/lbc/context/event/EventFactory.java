@@ -1,6 +1,6 @@
 package com.lbc.context.event;
 
-import com.lbc.maintenance.UpdateInfo;
+import com.lbc.maintenance.StatusInfo;
 
 /**
  * @description: 事件生成工厂
@@ -10,13 +10,13 @@ import com.lbc.maintenance.UpdateInfo;
 public class EventFactory {
 
     public static CacheRefreshedEvent newRefreshedEvent(Object key,long previousCount,long currentCount) {
-        UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.setKey(key);
-        updateInfo.setPreviousCount(previousCount);
-        updateInfo.setCurrentCount(currentCount);
+        StatusInfo statusInfo = new StatusInfo();
+        statusInfo.setKey(key);
+        statusInfo.setPreviousCount(previousCount);
+        statusInfo.setCurrentCount(currentCount);
         long time = System.currentTimeMillis();
-        updateInfo.setUpdateTime(time);
-        CacheRefreshedEvent cacheRefreshedEvent = new CacheRefreshedEvent(updateInfo,time);
+        statusInfo.setUpdateTime(time);
+        CacheRefreshedEvent cacheRefreshedEvent = new CacheRefreshedEvent(statusInfo,time);
         return cacheRefreshedEvent;
     }
 }

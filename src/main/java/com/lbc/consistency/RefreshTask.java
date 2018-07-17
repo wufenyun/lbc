@@ -42,11 +42,11 @@ public class RefreshTask<K,V> implements Runnable {
                 return;
             }
 
+            long existedSize = getExistedSize(key);
             List<V> data = cacheLoader.load(key);
-            context.getGlobalSingleCache().get(key);
             context.getGlobalSingleCache().replace(key,data);
 
-            Event event = EventFactory.newRefreshedEvent(key,getExistSize(key),data.size());
+            Event event = EventFactory.newRefreshedEvent(key,existedSize,data.size());
             context.getEventMulticaster().multicast(event);
             logger.debug("finished refresh the {}'s data,data: {}",key,data);
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class RefreshTask<K,V> implements Runnable {
         }
     }
 
-    private long getExistSize(Object key) {
+    private long getExistedSize(Object key) {
         QueryingCollection collection = context.getGlobalSingleCache().get(key);
         return (collection==null?0:collection.size());
     }

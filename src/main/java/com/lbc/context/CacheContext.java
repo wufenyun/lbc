@@ -8,6 +8,8 @@ import com.lbc.Cache;
 import com.lbc.config.LbcConfiguration;
 import com.lbc.context.event.EventMulticaster;
 import com.lbc.CacheLoader;
+import com.lbc.maintenance.SimpleStatusInfoContainer;
+import com.lbc.maintenance.StatusInfoContainer;
 
 /**
  * 本地批量缓存上下文环境，主要负责管理@see Cache的生命周期：
@@ -71,4 +73,10 @@ public interface CacheContext {
      * @return 事件消息多播器
      */
     EventMulticaster getEventMulticaster();
+
+    /**
+     * 获取本地缓存状态信息容器
+     * @return
+     */
+    StatusInfoContainer getStatusInfoContainer();
 }

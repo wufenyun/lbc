@@ -5,7 +5,7 @@ package com.lbc.context.event;
  * @author: wufenyun
  * @date: 2018-07-10 11
  **/
-public abstract class Event<T> {
+public abstract class Event {
 
     /**
      * 事件发生时间
@@ -15,17 +15,17 @@ public abstract class Event<T> {
     /**
      * 需要传递对象
      */
-    protected T  source;
+    protected Object source;
 
     public Event() {
         this(null,System.currentTimeMillis());
     }
 
-    public Event(T source) {
+    public Event(Object source) {
         this(source,System.currentTimeMillis());
     }
 
-    public Event(T source,long time) {
+    public Event(Object source,long time) {
         this.time = time;
         this.source = source;
     }
@@ -38,11 +38,11 @@ public abstract class Event<T> {
         this.time = time;
     }
 
-    public T getSource() {
+    public Object getSource() {
         return source;
     }
 
-    public void setSource(T source) {
+    public void setSource(Object source) {
         this.source = source;
     }
 

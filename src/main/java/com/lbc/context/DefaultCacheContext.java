@@ -9,6 +9,7 @@ import com.lbc.Cache;
 import com.lbc.LocalCache;
 import com.lbc.config.LbcConfiguration;
 import com.lbc.context.event.CloseEvent;
+import com.lbc.context.event.EventListener;
 import com.lbc.context.event.EventMulticaster;
 import com.lbc.context.event.SimpleEventMulticaster;
 import com.lbc.CacheLoader;
@@ -17,12 +18,15 @@ import com.lbc.consistency.eventdriven.ZkCacheMonitor;
 import com.lbc.consistency.polling.Polling;
 import com.lbc.consistency.polling.PolllingRefreshMonitor;
 import com.lbc.consistency.polling.StatusAcquirer;
-import com.lbc.maintenance.StatusComponent;
+import com.lbc.maintenance.SimpleStatusInfoContainer;
+import com.lbc.maintenance.StatusInfoContainer;
 import com.lbc.maintenance.StatusListener;
 import com.lbc.support.AssertUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -34,6 +38,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * DefaultCacheContext,默认缓存上下文实现,lbc核心类之一，@see CacheContext。
@@ -59,7 +64,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     private LocalCache cache;
     private ConsistencyMonitor monitor;
     private EventMulticaster eventMulticaster = new SimpleEventMulticaster();
-    private StatusComponent statusComponent = new StatusComponent();
+    private StatusInfoContainer statusInfoContainer = new SimpleStatusInfoContainer();
 
     @Override
     public void setConfiguration(LbcConfiguration lbcConfiguration) {
@@ -81,7 +86,10 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
         cache = new LocalCache(this);
         ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton("cache", cache);
 
-        eventMulticaster.addListener(new StatusListener(statusComponent));
+        Map<String,EventListener> listenerList = applicationContext.getBeansOfType(EventListener.class);
+        listenerList.forEach((key,entry)->{
+            eventMulticaster.addListener(entry);
+        });
     }
 
     /*   *************************   生命周期之缓存预加载   *************************   */
@@ -194,6 +202,11 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     @Override
     public EventMulticaster getEventMulticaster() {
         return eventMulticaster;
+    }
+
+    @Override
+    public StatusInfoContainer getStatusInfoContainer() {
+        return statusInfoContainer;
     }
 
     @Override

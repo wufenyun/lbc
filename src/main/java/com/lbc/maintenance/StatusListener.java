@@ -13,21 +13,21 @@ import org.slf4j.LoggerFactory;
  * @author: wufenyun
  * @date: 2018-06-28 18
  **/
-public class StatusListener implements EventListener {
+public class StatusListener implements EventListener<CacheRefreshedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(StatusListener.class);
 
-    private StatusComponent statusComponent;
+    private SimpleStatusInfoContainer simpleStatusInfoContainer;
 
-    public StatusListener(StatusComponent statusComponent) {
-        this.statusComponent = statusComponent;
+    public StatusListener(SimpleStatusInfoContainer simpleStatusInfoContainer) {
+        this.simpleStatusInfoContainer = simpleStatusInfoContainer;
     }
 
-    public StatusComponent getStatusComponent() {
+    public SimpleStatusInfoContainer getSimpleStatusInfoContainer() {
         return null;
     }
 
-    public void logPrinting(UpdateInfo updateInfo) {
-        logger.info("refresh message:{}",updateInfo.toString());
+    public void logPrinting(StatusInfo statusInfo) {
+        logger.info("refresh message:{}", statusInfo.toString());
     }
 
     @Override
@@ -36,8 +36,8 @@ public class StatusListener implements EventListener {
             return;
         }
 
-        UpdateInfo updateInfo = (UpdateInfo) event.getSource();
-        statusComponent.update(updateInfo.getKey(),updateInfo);
-        logPrinting(updateInfo);
+        StatusInfo statusInfo = (StatusInfo) event.getSource();
+        simpleStatusInfoContainer.updateStatusInfo(statusInfo);
+        logPrinting(statusInfo);
     }
 }

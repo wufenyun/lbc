@@ -1,11 +1,11 @@
 package com.lbc.maintenance;
 
 /**
- * @description: 针对单个key的一次更新信息
+ * @description: 针对单个key的状态信息
  * @author: wufenyun
  * @date: 2018-07-11 11
  **/
-public class UpdateInfo {
+public class StatusInfo {
 
     /**
      * 更新key
@@ -58,7 +58,7 @@ public class UpdateInfo {
 
     @Override
     public String toString() {
-        return "UpdateInfo{" +
+        return "StatusInfo{" +
                 "key=" + key +
                 ", previousCount=" + previousCount +
                 ", currentCount=" + currentCount +

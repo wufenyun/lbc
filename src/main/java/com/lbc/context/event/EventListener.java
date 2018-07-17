@@ -7,5 +7,5 @@ package com.lbc.context.event;
  **/
 public interface EventListener<E extends Event> {
 
-    void onEvent(E event);
+    void onEvent(Event event);
 }

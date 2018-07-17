@@ -1,5 +1,7 @@
 package com.lbc.context.event;
 
+import java.util.Set;
+
 /**
  * @description: 事件消息多播器
  * @author: wufenyun
@@ -7,11 +9,13 @@ package com.lbc.context.event;
  **/
 public interface EventMulticaster {
 
-    void addListener(EventListener eventListener);
+    void addListener(EventListener<?> eventListener);
 
-    void removeListener(EventListener eventListener);
+    void removeListener(EventListener<?> eventListener);
 
     void removeAllListeners();
 
     void multicast(Event event);
+
+    Set<EventListener<?>> getEventListener(Event event);
 }
