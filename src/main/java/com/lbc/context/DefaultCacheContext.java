@@ -58,6 +58,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
         ApplicationListener<ContextRefreshedEvent>, InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheContext.class);
+    private final Object startupShutdownMonitor = new Object();
 
     private ApplicationContext applicationContext;
     private LbcConfiguration lbcConfiguration;
@@ -65,6 +66,7 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     private ConsistencyMonitor monitor;
     private EventMulticaster eventMulticaster = new SimpleEventMulticaster();
     private StatusInfoContainer statusInfoContainer = new SimpleStatusInfoContainer();
+
 
     @Override
     public void setConfiguration(LbcConfiguration lbcConfiguration) {
@@ -78,14 +80,28 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     }
 
     @Override
-    public void init() {
+    public synchronized void init() {
         AssertUtil.notNull(applicationContext);
         AssertUtil.notNull(applicationContext.getAutowireCapableBeanFactory());
 
-        //此处生成cache对象，达到使用者开箱即用的效果
+        newCacheInstance();
+
+        registerListener();
+    }
+
+    /**
+     * 向spring容器中生成cache实例，达到使用者开箱即用的效果
+     */
+    private void newCacheInstance() {
         cache = new LocalCache(this);
         ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton("cache", cache);
 
+    }
+
+    /**
+     * 注册事件监听器
+     */
+    private void registerListener() {
         Map<String,EventListener> listenerList = applicationContext.getBeansOfType(EventListener.class);
         listenerList.forEach((key,entry)->{
             eventMulticaster.addListener(entry);
@@ -122,12 +138,14 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        //防止ContextRefreshedEvent事件发生多次
-        if ((null != event.getApplicationContext().getParent())) {
-            return;
-        }
+        synchronized (startupShutdownMonitor) {
+            //防止ContextRefreshedEvent事件发生多次
+            if ((null != event.getApplicationContext().getParent())) {
+                return;
+            }
 
-        onCacheBuilt();
+            onCacheBuilt();
+        }
     }
 
     @Override

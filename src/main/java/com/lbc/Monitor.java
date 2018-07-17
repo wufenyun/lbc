@@ -1,7 +1,7 @@
 package com.lbc;
 
 /**
- * @description: 本地缓存监控器
+ * @description: 本地缓存数据一致性监控器
  * @author: wufenyun
  * @date: 2018-06-28 16
  **/
