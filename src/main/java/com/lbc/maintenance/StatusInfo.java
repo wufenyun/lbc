@@ -1,9 +1,9 @@
 package com.lbc.maintenance;
 
 /**
- * @description: 针对单个key的状态信息
+ * 针对单个key的状态信息
+ *
  * @author: wufenyun
- * @date: 2018-07-11 11
  **/
 public class StatusInfo {
 

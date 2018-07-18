@@ -1,17 +1,16 @@
 package com.lbc.wrap;
 
-import java.util.List;
-import java.util.Map;
-
 import com.lbc.wrap.query.Queriable;
 import com.lbc.wrap.tree.TreeNode;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 可查询集合对象，提供对内存中集合查询功能
  * 
  * @author wufenyun
  * @param <V>
- * @date 2018年3月3日 上午10:53:32
  */
 public interface QueryingCollection<V> extends Queriable<V> {
 	

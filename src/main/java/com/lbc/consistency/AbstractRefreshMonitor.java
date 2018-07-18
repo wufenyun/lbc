@@ -5,7 +5,6 @@
 package com.lbc.consistency;
 
 import com.lbc.Cache;
-import com.lbc.CacheLoader;
 import com.lbc.config.MonitorConfig;
 import com.lbc.context.CacheContext;
 import org.slf4j.Logger;
@@ -17,9 +16,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description:  
- * Date: 2018年3月22日 下午2:42:21
- * @author wufenyun 
+ * 实现了ConsistencyMonitor部分方法。使用了模板方法模式，对两种监控模式通用方法进行了抽取。
+ * 使用线程池执行缓存刷新任务，线程数可由使用者配置。
+ *
+ * @author wufenyun
  */
 public abstract class AbstractRefreshMonitor implements ConsistencyMonitor {
     
@@ -98,13 +98,12 @@ public abstract class AbstractRefreshMonitor implements ConsistencyMonitor {
                 return;
             }
             
-            CacheLoader<?, ?> cacheLoader = cache.getAllKeyMap().get(key);
-            executor.submit(new RefreshTask(context, key, cacheLoader));
+            executor.submit(new RefreshTask(context, key));
         }
 
         @Override
         public void refreshAll() {
-            
+            //暂未实现
         }
 
         @Override

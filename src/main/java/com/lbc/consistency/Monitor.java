@@ -1,9 +1,9 @@
-package com.lbc;
+package com.lbc.consistency;
 
 /**
- * @description: 本地缓存数据一致性监控器
+ * 本地缓存数据一致性监控器
+ *
  * @author: wufenyun
- * @date: 2018-06-28 16
  **/
 public interface Monitor {
     /**

@@ -2,8 +2,8 @@ package com.lbc.config;
 
 /**
  * @description: 防缓存穿透相关配置
+ *
  * @author: wufenyun
- * @date: 2018-07-12 20
  **/
 public final class PreventPenetrationConfig {
 

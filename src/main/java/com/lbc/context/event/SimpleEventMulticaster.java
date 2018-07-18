@@ -12,9 +12,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: EventMulticaster实现类
+ * EventMulticaster接口实现类。
+ * 广播消息时通过事件类型获取订阅了该类型事件的监听器，然后执行传播事件
+ *
+ *
  * @author: wufenyun
- * @date: 2018-07-10 11
  **/
 public class SimpleEventMulticaster implements EventMulticaster {
 

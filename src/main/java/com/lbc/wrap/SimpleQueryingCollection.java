@@ -3,17 +3,17 @@
  */
 package com.lbc.wrap;
 
+import com.lbc.support.AssertUtil;
+import com.lbc.support.PropertyUtil;
+import com.lbc.wrap.query.Query;
+import com.lbc.wrap.tree.TreeNode;
+import com.lbc.wrap.tree.Treeable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import com.lbc.wrap.query.Query;
-import com.lbc.support.AssertUtil;
-import com.lbc.support.PropertyUtil;
-import com.lbc.wrap.tree.TreeNode;
-import com.lbc.wrap.tree.Treeable;
 
 /**
  * @see  QueryingCollection

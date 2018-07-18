@@ -20,13 +20,10 @@ import com.lbc.consistency.polling.PolllingRefreshMonitor;
 import com.lbc.consistency.polling.StatusAcquirer;
 import com.lbc.maintenance.SimpleStatusInfoContainer;
 import com.lbc.maintenance.StatusInfoContainer;
-import com.lbc.maintenance.StatusListener;
 import com.lbc.support.AssertUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -41,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DefaultCacheContext,默认缓存上下文实现,lbc核心类之一，@see CacheContext。
+ * DefaultCacheContext,@see CacheContext接口的默认实现,lbc核心类之一，。
  *
  * DefaultCacheContext主要借助于spring容器的生命周期来管理@see Cache的生命周期：
  *  InitializingBean    ——  初始化，包括创建缓存对象、处理配置信息、事件监听器等；
@@ -49,8 +46,12 @@ import java.util.Map;
  *  ApplicationListener ——  缓存创建以及初始化工作完成后相关事件，比如开启缓存一致性监控等等；
  *  DisposableBean      ——  缓存销毁；
  *
+ * DefaultCacheContext维护了一个LocalCache对象，LocalCache对使用者开放，{@link com.lbc.LocalCache}
+ * DefaultCacheContext维护了一个LbcConfiguration对象，LbcConfiguration包含了所有的用户配置信息,{@link com.lbc.config.LbcConfiguration}
+ * DefaultCacheContext维护了一个ConsistencyMonitor对象,负责缓存数据一致性监控，{@link com.lbc.consistency.ConsistencyMonitor}
+ * DefaultCacheContext维护了一个EventMulticaster对象,EventMulticaster负责事件传播，{@link com.lbc.context.event.EventMulticaster}
+ * DefaultCacheContext维护了一个StatusInfoContainer对象,StatusInfoContainer负责维护本地缓存状态信息，{@link com.lbc.maintenance.StatusInfoContainer}
  *
- * Date: 2018年3月5日 上午10:49:57
  *
  * @author wufenyun
  */
@@ -123,9 +124,9 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
 
         try {
             K key = cacheLoader.preLoadingKey();
-            List<V> initializedData = cacheLoader.preLoading();
+            List<V> initializedData = cacheLoader.load(key);
             cache.put(key, initializedData, cacheLoader);
-            cache.registLoaderAndPreLoadingMsg(cacheLoader);
+            cache.registerCacheLoader(key,cacheLoader);
 
             logger.info("CacheLoader preLoading '{}' cached data record:{}", key, initializedData.size());
             logger.debug("CacheLoader preLoading '{}' cached data :{}", key, initializedData);
@@ -196,7 +197,6 @@ public class DefaultCacheContext implements CacheContext, BeanPostProcessor,Appl
 
     @Override
     public void close() {
-        //关闭监控器
         if (null != monitor) {
             monitor.stopMonitor();
         }

@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
  *
  *
  * @author: wufenyun
- * @date: 2018-06-28 18
  **/
 public class StatusListener implements EventListener<CacheRefreshedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(StatusListener.class);
@@ -20,10 +19,6 @@ public class StatusListener implements EventListener<CacheRefreshedEvent> {
 
     public StatusListener(SimpleStatusInfoContainer simpleStatusInfoContainer) {
         this.simpleStatusInfoContainer = simpleStatusInfoContainer;
-    }
-
-    public SimpleStatusInfoContainer getSimpleStatusInfoContainer() {
-        return null;
     }
 
     public void logPrinting(StatusInfo statusInfo) {

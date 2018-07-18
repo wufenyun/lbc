@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  * lru辅助类
- * Date: 2018年3月23日 上午11:39:46
- * @author wufenyun 
+ *
+ * @author wufenyun
  */
 public class LruSupport {
 

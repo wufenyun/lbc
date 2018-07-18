@@ -7,9 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @description: 本地缓存状态信息
+ * 本地缓存状态信息维护组件接口实现。
+ * 维护缓存更新时间、缓存记录条数等信息
+ *
  * @author: wufenyun
- * @date: 2018-06-28 17
  **/
 public class SimpleStatusInfoContainer implements StatusInfoContainer {
     /**

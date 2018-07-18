@@ -12,14 +12,14 @@ import com.lbc.maintenance.SimpleStatusInfoContainer;
 import com.lbc.maintenance.StatusInfoContainer;
 
 /**
- * 本地批量缓存上下文环境，主要负责管理@see Cache的生命周期：
- *  初始化，包括创建缓存对象、处理配置信息、事件监听器等；
+ * 本地批量缓存上下文环境接口，不建议在业务中直接使用此接口。
+ * 主要负责管理@see Cache的生命周期：
+ *  初始化，包括创建缓存对象、注册事件监听器、处理配置信息等；
  *  执行缓存预加载；
  *  缓存创建以及初始化工作完成后相关事件，比如开启缓存一致性监控等等；
  *  缓存销毁；
  *
- * Date: 2018年3月5日 上午10:44:59
- * @author wufenyun 
+ * @author wufenyun
  */
 public interface CacheContext {
 

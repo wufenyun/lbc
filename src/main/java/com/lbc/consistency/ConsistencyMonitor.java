@@ -4,10 +4,8 @@
  */
 package com.lbc.consistency;
 
-import com.lbc.Monitor;
-
 /**
- * 缓存数据一致性状态监控器
+ * 缓存数据一致性状态监控器接口
  *
  * Date: 2018年3月2日 下午6:09:00
  * @author wufenyun 

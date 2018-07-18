@@ -3,9 +3,9 @@ package com.lbc.context.event;
 import java.util.Set;
 
 /**
- * @description: 事件消息多播器
+ * 事件消息多播器
+ *
  * @author: wufenyun
- * @date: 2018-07-10 11
  **/
 public interface EventMulticaster {
 
@@ -17,5 +17,11 @@ public interface EventMulticaster {
 
     void multicast(Event event);
 
+    /**
+     * 通过事件类型获取订阅了该类型事件的监听器
+     *
+     * @param event
+     * @return
+     */
     Set<EventListener<?>> getEventListener(Event event);
 }

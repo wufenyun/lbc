@@ -23,13 +23,6 @@ public interface CacheLoader<K,V>{
      * @return
      */
     K preLoadingKey();
-    
-    /** 
-     * 预加载数据到内存
-     * @return
-     * @throws Exception
-     */
-    List<V> preLoading() throws Exception;
 
     /**
      * 根据key加载数据到内存

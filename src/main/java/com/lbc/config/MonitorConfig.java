@@ -2,8 +2,8 @@ package com.lbc.config;
 
 /**
  * @description: 缓存一致性监控配置
+ *
  * @author: wufenyun
- * @date: 2018-07-12 19
  **/
 public final class MonitorConfig {
 

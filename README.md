@@ -31,7 +31,7 @@ lbc(local batch cache),依赖于spring框架实现，提供：缓存预加载，
   <dependency>
     <groupId>com.github.wufenyun</groupId>
     <artifactId>lbc</artifactId>
-    <version>1.1.1-RELEASE</version>
+    <version>xxx</version>
   </dependency>  
 ```
 

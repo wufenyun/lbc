@@ -5,16 +5,18 @@
 package com.lbc.config;
 
 /**
- * lbc配置类，负责管理lbc所有的配置信息
- * 
- * Date: 2018年3月5日 上午10:49:13
- * @author wufenyun 
+ * lbc配置类，使用构建者模式，负责管理lbc所有的配置信息,主要配置模块：
+ *  MonitorConfig：缓存数据一致性监控相关配置
+ *  EliminationConfig：缓存淘汰机制相关配置
+ *  PreventPenetrationConfig：防止缓存穿透相关配置
+ *
+ * @author wufenyun
  */
 public class LbcConfiguration {
 
     private MonitorConfig monitorConfig;
-    private PreventPenetrationConfig preventPenetrationConfig;
     private EliminationConfig eliminationConfig;
+    private PreventPenetrationConfig preventPenetrationConfig;
 
     private LbcConfiguration(Builder builder) {
         this.monitorConfig = builder.monitorConfig;

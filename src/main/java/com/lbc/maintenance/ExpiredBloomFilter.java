@@ -5,9 +5,9 @@ import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @description: 布隆过滤器
+ * 可过期的重置的布隆过滤器
+ *
  * @author: wufenyun
- * @date: 2018-07-11 14
  **/
 public class ExpiredBloomFilter implements Serializable {
     private final int[] seeds = new int[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53 };

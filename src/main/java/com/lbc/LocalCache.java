@@ -21,23 +21,27 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * see Cache
- * Date: 2018年3月2日 下午2:38:28
- * @author wufenyun 
+ * Cache接口的实现，LocalCache对使用者透明，开箱即用，生命周期由{@link com.lbc.context.DefaultCacheContext}维护。
+ *
+ * LocalCache使用线程安全的ConcurrentHashMap实现。
+ * 维护allKeyMap,记录每个key对应的CacheLoader，当需要从外部加载数据的时候需要用到key的CacheLoader；
+ * 维护cacheLoaderMapping，调用get(K key,Class<? extends CacheLoader<K, V>> clazz)方法时获取CacheLoader实例；
+ *
+ * get(K key,Class<? extends CacheLoader<K, V>> clazz)方法根据使用者配置做了防缓存击穿和防缓存穿透策略
+ *
+ * @author wufenyun
  */
 public class LocalCache implements Cache {
     
     private static final Logger logger = LoggerFactory.getLogger(LocalCache.class);
-    
+
     private Map<Object, QueryingCollection<?>> storage = new ConcurrentHashMap<>();
-    private Map<Object, CacheLoader<?,?>> initialedKeyMap = new ConcurrentHashMap<>();
     private Map<Object, CacheLoader<?,?>> allKeyMap = new ConcurrentHashMap<>();
     private Map<Class<?>, CacheLoader<?, ?>> cacheLoaderMapping = new ConcurrentHashMap<>();
 
     private LbcConfiguration config;
     private CacheContext context;
     private LruSupport lruLinkedSupport;
-    private boolean isLruCache;
     private ExpiredBloomFilter expiredBloomFilter;
 
     public LocalCache(CacheContext context) {
@@ -45,7 +49,6 @@ public class LocalCache implements Cache {
         this.config = context.getConfiguration();
 
         if(isLruPolicy()) {
-            isLruCache = true;
             lruLinkedSupport = new LruSupport(config.getEliminationConfig().getCacheSizeThreshold());
         }
 
@@ -88,22 +91,33 @@ public class LocalCache implements Cache {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public <K, V> QueryingCollection<V> refresh(K key) {
-        AssertUtil.notNull(key, "key不能为空");
+        AssertUtil.notNull(key, "key can't be null");
         CacheLoader cacheLoader = allKeyMap.get(key);
+        AssertUtil.notNull(cacheLoader,"can't get the key:"+key+"'s CacheLoader");
 
-        AssertUtil.notNull(cacheLoader,"无法通过key:"+key+"找到其缓存加载器，请确保相应key是正确的");
+        if(!context.getGlobalSingleCache().contains(key)) {
+            logger.info("lbc have not load key：{} data，don't refresh",key);
+            return null;
+        }
+
         try {
-            List<V> data = cacheLoader.load(key);
-            QueryingCollection<V> wrapper = new SimpleQueryingCollection<>(data);
-            Event event = EventFactory.newRefreshedEvent(key,getExistSize(key),data.size());
-            getMultiCaster().multicast(event);
-            return (QueryingCollection<V>) storage.replace(key, wrapper);
+            //这里锁住cacheLoader即只会在key的粒度上锁，应该不会有性能问题
+            synchronized (cacheLoader) {
+                long existedSize = getExistedSize(key);
+                List<V> data = cacheLoader.load(key);
+                QueryingCollection<V> wrapper = new SimpleQueryingCollection<>(data);
+                Event event = EventFactory.newRefreshedEvent(key, existedSize, data.size());
+                getMultiCaster().multicast(event);
+
+                logger.debug("finished refresh the {}'s data,data: {}",key,data);
+                return (QueryingCollection<V>) storage.replace(key, wrapper);
+            }
         } catch (Exception e) {
             throw new RuntimeException("刷新缓存"+key+"出现异常",e);
         }
     }
 
-    private long getExistSize(Object key) {
+    private long getExistedSize(Object key) {
         QueryingCollection collection = context.getGlobalSingleCache().get(key);
         return (collection==null?0:collection.size());
     }
@@ -188,7 +202,7 @@ public class LocalCache implements Cache {
      */
     private void lruIfNecessary(Object key) {
         //如果不需要lru处理，直接返回
-        if((!isLruCache) || initialedKeyMap.containsKey(key)) {
+        if(!isLruPolicy()) {
             return;
         }
 
@@ -207,11 +221,6 @@ public class LocalCache implements Cache {
         return storage.containsKey(key);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<Object, CacheLoader<?,?>> getInitialedKeyMap() {
-        return initialedKeyMap;
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -220,14 +229,14 @@ public class LocalCache implements Cache {
     }
 
     /**
-     * 注册缓存加载器以及缓存预加载信息
+     * 注册缓存加载器信息
      *
      * @param cacheLoader
      */
-    public void registLoaderAndPreLoadingMsg(CacheLoader<?, ?> cacheLoader) {
-        logger.info("registCacheLoader caching loader that needs to be initially loaded：{}", cacheLoader.getClass());
+    public void registerCacheLoader(Object key, CacheLoader<?, ?> cacheLoader) {
+        logger.info("registerCacheLoader caching loader that needs to be initially loaded：{}", cacheLoader.getClass());
         //添加缓存预加载信息
-        initialedKeyMap.put(cacheLoader.preLoadingKey(), cacheLoader);
+        allKeyMap.put(key,cacheLoader);
         //添加缓存加载器信息
         cacheLoaderMapping.put(cacheLoader.getClass(), cacheLoader);
     }
