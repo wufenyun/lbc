@@ -11,9 +11,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Description:  
- * Date: 2018年3月12日 下午5:53:41
- * @author wufenyun 
+ * 通过zookeeper的方式通知缓存刷新功能实现
+ *
+ * @author wufenyun
  */
 public class ZkCacheStatusChanger implements CacheStatusChanger {
     

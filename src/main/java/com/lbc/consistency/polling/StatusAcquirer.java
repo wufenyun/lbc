@@ -7,8 +7,7 @@ package com.lbc.consistency.polling;
 /**
  * 缓存状态获取器
  * 
- * Date: 2018年3月2日 下午6:03:48
- * @author wufenyun 
+ * @author wufenyun
  */
 public interface StatusAcquirer {
     

@@ -13,9 +13,9 @@ import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 
 /**
- * Description:  
- * Date: 2018年3月9日 下午5:10:59
- * @author wufenyun 
+ * 依赖于zookeeper实现的缓存数据一致性监控器
+ *
+ * @author wufenyun
  */
 public class ZkCacheMonitor extends AbstractRefreshMonitor implements IZkDataListener {
 

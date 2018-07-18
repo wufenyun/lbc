@@ -15,9 +15,9 @@ import com.lbc.context.CacheContext;
 import com.lbc.consistency.AbstractRefreshMonitor;
 
 /**
- * Description:  
- * Date: 2018年3月9日 上午11:08:03
- * @author wufenyun 
+ * 轮询模式的缓存数据一致性监控器
+ *
+ * @author wufenyun
  */
 public class PolllingRefreshMonitor extends AbstractRefreshMonitor implements Polling {
 

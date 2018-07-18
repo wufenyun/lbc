@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: 创建并注册单例ZkCacheStatusChager
+ * 创建并注册单例ZkCacheStatusChager
+ *
  * @author: wufenyun
- * @date: 2018-05-25 16
  **/
 public final class SingletonZKChangerRegistry {
 

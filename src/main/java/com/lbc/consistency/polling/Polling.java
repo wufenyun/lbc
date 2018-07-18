@@ -6,8 +6,8 @@ package com.lbc.consistency.polling;
 
 /**
  * 轮询模式监控器
- * Date: 2018年3月9日 下午5:16:50
- * @author wufenyun 
+ *
+ * @author wufenyun
  */
 public interface Polling {
     

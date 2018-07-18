@@ -5,9 +5,9 @@
 package com.lbc.consistency.eventdriven.support;
 
 /**
- * Description:  
- * Date: 2018年3月12日 下午5:50:37
- * @author wufenyun 
+ * 通知缓存刷新接口
+ *
+ * @author wufenyun
  */
 public interface CacheStatusChanger {
 

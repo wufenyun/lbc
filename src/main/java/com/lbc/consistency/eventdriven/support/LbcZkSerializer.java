@@ -11,8 +11,8 @@ import org.I0Itec.zkclient.serialize.ZkSerializer;
 
 /**
  * 自定义序列化工具类
- * Date: 2018年3月13日 下午6:53:42
- * @author wufenyun 
+ *
+ * @author wufenyun
  */
 public class LbcZkSerializer implements ZkSerializer {
 
