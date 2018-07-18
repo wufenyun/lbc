@@ -10,7 +10,7 @@ import java.util.Map;
 import com.lbc.wrap.QueryingCollection;
 
 /**
- * Cache接口，lbc对使用者开放的核心接口，仅定义了面向使用者的获取、写入、刷新等常用功能，
+ * Cache接口，lbc对使用者开放的核心接口，线程安全，仅定义了面向使用者的获取、写入、刷新等常用功能，
  * 缓存的维护比如生命周期、监控、状态信息等由{@link com.lbc.context.CacheContext}实现。
  *
  * get(K key)方法只会从本地缓存获取数据，如果本地缓存中没有数据直接返回；
