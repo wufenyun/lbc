@@ -31,6 +31,8 @@ lbc(local batch cache),依赖于spring框架实现，提供：缓存预加载，
  
 ### 2.使用说明
 
+lbc环境要求：java8及以上，spring4.x及以上。
+
 lbc使用项目案例可以查看：https://github.com/wufenyun/lbc-demo
 
 
