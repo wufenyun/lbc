@@ -11,11 +11,20 @@ import java.util.List;
  * @author wufenyun
  */
 public interface Queriable<V> {
-	
+
+	/**
+	 * 查询,返回单个对象
+	 *
+	 * @param query
+	 * @return
+	 */
+	V queryUnique(Query query);
 	/** 
-	 * 查询
+	 * 查询,返回List
+	 *
 	 * @param query
 	 * @return
 	 */
 	List<V> query(Query query);
+
 }

@@ -4,6 +4,7 @@
 package com.lbc.wrap;
 
 import com.lbc.support.AssertUtil;
+import com.lbc.support.CommonUtil;
 import com.lbc.support.PropertyUtil;
 import com.lbc.wrap.query.Query;
 import com.lbc.wrap.tree.TreeNode;
@@ -39,6 +40,12 @@ public class SimpleQueryingCollection<V> implements QueryingCollection<V> {
 		this.data = v;
 		return this;
 	}
+
+    @Override
+    public V queryUnique(Query query) {
+        List<V> list = query(query);
+        return CommonUtil.isEmpty(list)?null:list.get(0);
+    }
 
     @Override
     public List<V> query(Query query) {
